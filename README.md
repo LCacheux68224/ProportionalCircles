@@ -8,7 +8,27 @@ _Source : Insee, RP2009 au lieu de résidence_<br>
 _Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géographique des Communes IGN-RGC® 2012, contours de département et régions IGN-GEOFLA® 2012_
 ## Fichiers sont nécessaires :
 * Un fond d'analyse (points ou polygones) ;
-* Une table de données contenant un identifiant géographique et la valeur à représenter ;<br>![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/Table.png)
+* Une table de données contenant un identifiant géographique et la variable à représenter ;<br>![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/Table.png)
 * Un fond correspondant au contour de l'analyse pour le calcul automatique de l'échelle.
  
 ## Utilisation :
+L'analyse en rond se lance soit depuis le menu « **_Vecteur\Analyse en ronds_** »,
+soit en cliquant sur l'icône 
+![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/iconRonds.png) après avoir fait la jointure entre la table de données et le fond d'analyse<br><br>
+Renseigner les paramètres suivants :
+* **Fond cartographique**-> Fond d'analyse (points ou vecteurs) ;
+* **Valeurs** -> Variable à représenter ;
+* **Contour** -> Contour d'analyse pour le calcul de l'échelle automatique ;<br><br>
+Pour une échelle personnalisée, pour permette d'obtenir plusieurs analyses comparables
+* **Rayon** -> Rayon maximum de l'échelle personnalisée ;
+* **Valeur** -> Valeur maximum de l'échelle personnalisée ;<br><br>
+* **Valeurs à représenter…** -> Liste des valeurs à représenter dans la légende. Les valeurs sont à séparer par un point-virgule. Laisser vide pour obtenir une légende avec trois valeurs automatiques (max, max/3, max/9)
+
+Il est possible également de ne sélectionner qu'une partie des entités du fond de carte pour limiter l'analyse à une zone restreinte.<br>
+![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/ProportionalCircles2.png)<br>
+_Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géographique des Communes IGN-RGC® 2012, contours de département et régions IGN-GEOFLA® 2012_<br><br>
+En cochant la case **Analyse étendue**, l'échelle des ronds est calculée en fonction des entités sélectionnées, puis étendue au reste de la carte.<br>
+![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/ProportionalCircles3.png)<br>
+_Source : Insee, RP2009 au lieu de résidence_<br>
+_Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géographique des Communes IGN-RGC® 2012, contours de département et régions IGN-GEOFLA® 2012_
+
