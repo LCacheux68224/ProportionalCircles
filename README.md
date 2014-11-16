@@ -1,4 +1,4 @@
-Analyse en ronds proportionnels<br>avec échelle automatique
+Analyse en ronds proportionnels<br>avec échelle et légende automatique
 ===================
 
 ###_(Extension pour Qgis 2.0.1 et +)_
