@@ -21,7 +21,7 @@ Renseigner les paramètres suivants :
 * **Valeurs** -> Variable à représenter ;
 * **Contour** -> Contour d'analyse pour le calcul de l'échelle automatique ;<br><br>
 L'échelle automatique permet d'obtenir une analyse de manière à ce que l'aire des l'ensemble des ronds soit égale à 1/7 de la surface d'un contour de référence choisi par l'utilisateur.<br> <br>
-Pour une échelle personnalisée, pour permette d'obtenir plusieurs analyses comparables
+L'échelle personnalisée permet de faire plusieurs analyses en ronds en conservant une même échelle pour faciliter les comparaisons.
 * **Rayon** -> Rayon maximum de l'échelle personnalisée ;
 * **Valeur** -> Valeur maximum de l'échelle personnalisée ;<br><br>
 * **Valeurs à représenter…** -> Liste des valeurs à représenter dans la légende. Les valeurs sont à séparer par un point-virgule. Laisser vide pour obtenir une légende avec trois valeurs automatiques (max, max/3, max/9)
