@@ -34,5 +34,5 @@ _Source : Insee, RP2009 au lieu de résidence_<br>
 _Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géographique des Communes IGN-RGC® 2012, contours de département et régions IGN-GEOFLA® 2012_
 
 ### Deux sorties sont proposées : 
-* Une sortie sous forme de carte mémoire qui nécessite l'extension « **Memory Layer Saver** » pour que le fond puisse être enregistré en parallèle au projet dans un fichier _NomDuProjet.qgs.mldata_ ;
-* Une sortie sous forme de fond Shapefile classique.
+* Une sortie sous forme de deux cartes en mémoire (analyse + légende) nécessitant l'extension « **Memory Layer Saver** » pour que les fonds puisse être enregistrés en parallèle au projet dans un fichier _NomDuProjet.qgs.mldata_ ;
+* Une sortie sous forme de deux fonds Shapefile classique.
