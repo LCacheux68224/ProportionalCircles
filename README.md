@@ -6,10 +6,10 @@ L'analyse en ronds proportionnels est utilisée pour représenter des effectifs,
 ![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/ProportionalCircles1.png)<br>
 _Source : Insee, RP2009 au lieu de résidence_<br>
 _Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géographique des Communes IGN-RGC® 2012, contours de département et régions IGN-GEOFLA® 2012_
-## Fichiers sont nécessaires :
+## Fichiers nécessaires :
 * Un fond d'analyse (points ou polygones) ;
 * Une table de données contenant un identifiant géographique et la variable à représenter ;<br>![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/Table.png)
-* Un fond correspondant au contour de l'analyse pour le calcul automatique de l'échelle.
+* Un fond correspondant au contour de l'analyse en cas de calcul automatique de l'échelle.
  
 ## Utilisation :
 L'analyse en rond se lance soit depuis le menu « **_Vecteur\Analyse en ronds_** »,
@@ -32,3 +32,6 @@ En cochant la case **Analyse étendue**, l'échelle des ronds est calculée en f
 _Source : Insee, RP2009 au lieu de résidence_<br>
 _Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géographique des Communes IGN-RGC® 2012, contours de département et régions IGN-GEOFLA® 2012_
 
+### Deux sorties sont proposées : 
+* Une sortie sous forme de carte mémoire qui nécessite l'extension « **Memory Layer Saver** » pour que le fond puisse être enregistré en parallèle au projet dans un fichier _NomDuProjet.qgs.mldata_ ;
+* Une sortie sous forme de fond Shapefile classique.
