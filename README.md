@@ -20,7 +20,7 @@ Renseigner les paramètres suivants :
 * **Fond cartographique**-> Fond d'analyse (points ou vecteurs) ;
 * **Valeurs** -> Variable à représenter ;
 * **Contour** -> Contour d'analyse pour le calcul de l'échelle automatique ;<br><br>
-L'échelle automatique perment d'obtenir une analyse de manière à ce que l'aire des l'ensemble des ronds soit égale à 1/7 de la surface d'un contour de référence choisi par l'utilisateur.<br> 
+L'échelle automatique permet d'obtenir une analyse de manière à ce que l'aire des l'ensemble des ronds soit égale à 1/7 de la surface d'un contour de référence choisi par l'utilisateur.<br> <br>
 Pour une échelle personnalisée, pour permette d'obtenir plusieurs analyses comparables
 * **Rayon** -> Rayon maximum de l'échelle personnalisée ;
 * **Valeur** -> Valeur maximum de l'échelle personnalisée ;<br><br>
