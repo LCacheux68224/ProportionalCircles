@@ -29,7 +29,7 @@ L'échelle personnalisée permet de faire plusieurs analyses en ronds en conserv
 Il est possible également de ne sélectionner qu'une partie des entités du fond de carte pour limiter l'analyse à une zone restreinte.<br>
 ![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/ProportionalCircles2.png)<br>
 _Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géographique des Communes IGN-RGC® 2012, contours de département et régions IGN-GEOFLA® 2012_<br><br>
-En cochant la case **Analyse étendue**, l'échelle des ronds est calculée en fonction des entités sélectionnées, puis étendue au reste de la carte.<br>
+En cochant la case **Analyse étendue**, l'échelle des ronds est calculée en fonction des entités et éventuellement d'un contour de référence sélectionnés, puis étendue à l'ensemble du fond d'analyse.<br>
 ![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/ProportionalCircles3.png)<br>
 _Source : Insee, RP2009 au lieu de résidence_<br>
 _Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géographique des Communes IGN-RGC® 2012, contours de département et régions IGN-GEOFLA® 2012_
