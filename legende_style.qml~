@@ -79,7 +79,7 @@
     <property key="labeling/fieldName" value="format_number( VALEUR,0)"/>
     <property key="labeling/fontBold" value="false"/>
     <property key="labeling/fontCapitals" value="0"/>
-    <!-- <property key="labeling/fontFamily" value="Ubuntu"/> -->
+    <property key="labeling/fontFamily" value="Ubuntu"/>
     <property key="labeling/fontItalic" value="false"/>
     <property key="labeling/fontLetterSpacing" value="0"/>
     <property key="labeling/fontLimitPixelSize" value="false"/>
@@ -199,7 +199,7 @@
   <label>0</label>
   <labelattributes>
     <label fieldname="" text="Étiquette"/>
-    <family fieldname="" name="MS Shell Dlg 2"/>
+    <family fieldname="" name="Ubuntu"/>
     <size fieldname="" units="pt" value="12"/>
     <bold fieldname="" on="0"/>
     <italic fieldname="" on="0"/>
