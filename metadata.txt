@@ -31,9 +31,9 @@ changelog:
 # tags are comma separated with spaces allowed
 tags=
 
-homepage=
-tracker=
-repository=
+homepage=https://github.com/LCacheux68224/ProportionalCircles
+tracker=https://github.com/LCacheux68224/ProportionalCircles/issues
+repository=https://github.com/LCacheux68224/ProportionalCircles
 icon=iconRonds.png
 # experimental flag
 experimental=False
