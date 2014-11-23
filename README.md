@@ -31,7 +31,7 @@ La valeur maximale ainsi que le rayon maximum apparaissent automatiquement dans 
 Il est possible également de ne sélectionner qu'une partie des entités du fond de carte pour limiter l'analyse à une zone restreinte.<br>
 ![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/ProportionalCircles2.png)<br>
 _Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géographique des Communes IGN-RGC® 2012, contours de département et régions IGN-GEOFLA® 2012_<br><br>
-En cochant la case **Analyse étendue**, l'échelle des ronds est calculée en fonction de la sélection du fond d'analyse, puis étendue au reste des entités.<br>
+En cochant la case **Analyse étendue**, l'échelle des ronds est calculée en fonction de la sélection du fond d'analyse et du contour, puis étendue au reste des entités.<br>
 ![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/ProportionalCircles3.png)<br>
 _Source : Insee, RP2009 au lieu de résidence_<br>
 _Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géographique des Communes IGN-RGC® 2012, contours de département et régions IGN-GEOFLA® 2012_<br>
