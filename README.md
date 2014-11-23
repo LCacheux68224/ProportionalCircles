@@ -24,7 +24,8 @@ Renseigner les paramètres suivants :
 L'échelle automatique permet d'obtenir une analyse de manière à ce que l'aire des l'ensemble des ronds soit égale à 1/7 de la surface d'un contour de référence choisi par l'utilisateur.<br> <br>
 L'échelle personnalisée permet de faire plusieurs analyses en ronds en conservant une même échelle pour faciliter les comparaisons.
 * **Rayon** -> Rayon maximum de l'échelle personnalisée ;
-* **Valeur** -> Valeur maximum de l'échelle personnalisée ;<br><br>
+* **Valeur** -> Valeur maximum de l'échelle personnalisée ;<br>
+La valeur maximale ainsi que le rayon maximum apparaissent automatiquement dans la barre de message en fin d'analyse au cas où l'on voudrait refaire une analyse sur un autre territoire en utilisant la même échelle.<br>
 * **Valeurs à représenter…** -> Liste des valeurs à représenter dans la légende. Les valeurs sont à séparer par un point-virgule. Laisser vide pour obtenir une légende avec trois valeurs automatiques (max, max/3, max/9)
 
 Il est possible également de ne sélectionner qu'une partie des entités du fond de carte pour limiter l'analyse à une zone restreinte.<br>
@@ -33,7 +34,9 @@ _Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géog
 En cochant la case **Analyse étendue**, l'échelle des ronds est calculée en fonction de la sélection du fond d'analyse, puis étendue au reste des entités.<br>
 ![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/ProportionalCircles3.png)<br>
 _Source : Insee, RP2009 au lieu de résidence_<br>
-_Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géographique des Communes IGN-RGC® 2012, contours de département et régions IGN-GEOFLA® 2012_
+_Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géographique des Communes IGN-RGC® 2012, contours de département et régions IGN-GEOFLA® 2012_<br>
+
+
 
 ### Les deux types de sorties proposées : 
 * Une sortie sous forme de deux cartes "mémoire" (analyse + légende). Ce type de sortie nécessite l'extension « **Memory Layer Saver** » pour que les fonds puisse être enregistrés en parallèle au projet dans un fichier _NomDuProjet.qgs.mldata_ ;
