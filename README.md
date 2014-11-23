@@ -3,15 +3,15 @@ Analyse en ronds proportionnels<br>avec échelle et légende automatique
 
 ###_(Extension pour Qgis 2.0.1 et +)_
 L'analyse en ronds proportionnels est utilisée pour représenter des effectifs, par exemple la population de communes de pays.<br><br>
-L'extension crée deux fonds cartographiques : l'un pour l'analyse en ronds, l'autre pour sa légende. La couche ronds peut ainsi être utilisée comme n'importe quel fond cartographique (analyse catégorisée/graduée, filtrage, déplacement d'entités notamment les ronds de la légende), mais peut également être enregistrée et être reprise par n'importe quel logiciel acceptant le format Shapefile.<BR>   
+L'extension crée deux couches : l'une pour l'analyse en ronds et l'autre pour sa légende. La couche de ronds peut ainsi être utilisée comme n'importe quel fond cartographique (analyse catégorisée/graduée, filtrage, déplacement d'entités notamment les ronds de la légende), mais peut également être enregistrée pour être réutilisée dans n'importe quel logiciel de cartographie acceptant le format Shapefile.<BR>   
 ##Exemple d'analyse en ronds : <br>Nombre de ménages des communes du Morbihan en 2009
 ![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/ProportionalCircles1.png)<br>
 _Source : Insee, RP2009 au lieu de résidence_<br>
 _Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géographique des Communes IGN-RGC® 2012, contours de département et régions IGN-GEOFLA® 2012_
 ## Fichiers nécessaires :
 * Un fond d'analyse (points ou polygones) ;
-* Une table de données contenant un identifiant géographique et la variable à représenter ;<br>![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/Table.png)
-* Un fond correspondant au contour de l'analyse en cas de calcul automatique de l'échelle.
+* Une table de données contenant un identifiant géographique ainsi que la variable à représenter au cas où cette dernière ne serait pas déjà présente dans le fond d'analyse. ;<br>![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/Table.png)
+* Un fond correspondant au contour de l'analyse (uniquement pour un calcul automatique de l'échelle).
  
 ## Utilisation :
 L'analyse en rond se lance soit depuis le menu « **_Vecteur\Analyse en ronds_** »,
@@ -35,6 +35,6 @@ En cochant la case **Analyse étendue**, l'échelle des ronds est calculée en f
 _Source : Insee, RP2009 au lieu de résidence_<br>
 _Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géographique des Communes IGN-RGC® 2012, contours de département et régions IGN-GEOFLA® 2012_
 
-### Deux sorties sont proposées : 
-* Une sortie sous forme de deux cartes en mémoire (analyse + légende) nécessitant l'extension « **Memory Layer Saver** » pour que les fonds puisse être enregistrés en parallèle au projet dans un fichier _NomDuProjet.qgs.mldata_ ;
-* Une sortie sous forme de deux fonds Shapefile classique.
+### Les deux types de sorties proposées : 
+* Une sortie sous forme de deux cartes "mémoire" (analyse + légende). Ce type de sortie nécessite l'extension « **Memory Layer Saver** » pour que les fonds puisse être enregistrés en parallèle au projet dans un fichier _NomDuProjet.qgs.mldata_ ;
+* Une sortie sous forme de deux fonds Shapefile classiques (analyse + légende).
