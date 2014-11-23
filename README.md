@@ -25,7 +25,7 @@ L'échelle automatique permet d'obtenir une analyse de manière à ce que l'aire
 L'échelle personnalisée permet de faire plusieurs analyses en ronds en conservant une même échelle pour faciliter les comparaisons.
 * **Rayon** -> Rayon maximum de l'échelle personnalisée ;
 * **Valeur** -> Valeur maximum de l'échelle personnalisée ;<br>
-La valeur maximale ainsi que le rayon maximum apparaissent automatiquement dans la barre de message en fin d'analyse au cas où l'on voudrait refaire une analyse sur un autre territoire en utilisant la même échelle.<br>
+La valeur maximale ainsi que le rayon maximum apparaissent automatiquement dans la barre de message en fin d'analyse au cas où l'on voudrait refaire une analyse sur un autre territoire en utilisant la même échelle.<br><br>
 * **Valeurs à représenter…** -> Liste des valeurs à représenter dans la légende. Les valeurs sont à séparer par un point-virgule. Laisser vide pour obtenir une légende avec trois valeurs automatiques (max, max/3, max/9)
 
 Il est possible également de ne sélectionner qu'une partie des entités du fond de carte pour limiter l'analyse à une zone restreinte.<br>
