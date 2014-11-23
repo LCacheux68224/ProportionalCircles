@@ -2,7 +2,7 @@ Analyse en ronds proportionnels<br>avec échelle et légende automatique
 ===================
 
 ###_(Extension pour Qgis 2.0.1 et +)_
-L'analyse en ronds proportionnels est utilisée pour représenter des effectifs, par exemple la population de communes de pays.<br><br>
+L'analyse en ronds proportionnels est utilisée pour représenter des effectifs ou des évolutions en effectifs, par exemple la population de communes de pays.<br><br>
 L'extension crée deux couches : l'une pour l'analyse en ronds et l'autre pour sa légende. La couche de ronds peut ainsi être utilisée comme n'importe quel fond cartographique (analyse catégorisée/graduée, filtrage, déplacement d'entités notamment les ronds de la légende), mais peut également être enregistrée pour être réutilisée dans n'importe quel logiciel de cartographie acceptant le format Shapefile.<BR>   
 ##Exemple d'analyse en ronds : <br>Nombre de ménages des communes du Morbihan en 2009
 ![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/ProportionalCircles1.png)<br>
