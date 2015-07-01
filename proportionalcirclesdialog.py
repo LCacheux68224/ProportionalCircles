@@ -43,14 +43,42 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
 
+        self.selectedAttributesList = []
         self.setupUi(self)
         self.autoScale.toggled.connect(self.radio_scale)
         self.shapefileOutput.toggled.connect(self.radio_shapefile)
 	self.buttonBox.rejected.connect(self.reject)
 	self.buttonBox.accepted.connect(self.accept)	
+        #QObject.connect(self.btnAdd, SIGNAL("clicked()"), self.onAdd)
+
+        self.inputLayer.currentIndexChanged.connect(self.populateSelectedAttributes)
         self.inputLayer.currentIndexChanged.connect(self.populateAttributes)
         self.oldPath = ''
         self.selectFileName.clicked.connect(self.browse)
+        self.btnAdd.clicked.connect(self.onAdd)
+        self.btnRemove.clicked.connect(self.onRemove)
+
+    def onAdd(self):
+        selectedItem = self.availableAttributes.currentItem()
+        if selectedItem is not None and selectedItem.text() not in self.selectedAttributesList:
+            self.selectedAttributesList.append(selectedItem.text())
+            self.populateSelectedAttributes()
+
+    def onRemove(self):
+	selectedItem = self.selectedAttributes.currentItem()
+        if selectedItem is not None and selectedItem.text() in self.selectedAttributesList :
+            self.selectedAttributesList.remove(selectedItem.text())
+            self.populateSelectedAttributes()
+
+    def  DeleteStyle(self):      
+        self.listStyles.takeItem(self.listStyles.currentRow())
+        delStyle(self.currentItem.text())
+        StyleList = getStyleList()
+        if len(StyleList)==0:
+            self.Delete_btn.setEnabled(False)
+            self.Activate_btn.setEnabled(False)
+            self.currentItem = None 
+        return
 
     def radio_scale(self):
             if self.autoScale.isChecked():
@@ -97,19 +125,36 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
         myListContours = ftu.getLayerNames( [ qgis.QGis.Polygon ] )
         self.inputLayer.addItems( myListFonds )
         self.analysisLayer.addItems( myListContours )
+
   
 
     def populateAttributes( self ):
 
         layerName = self.inputLayer.currentText()
-        self.inputValue.clear()
+        self.availableAttributes.clear()
+        self.selectedAttributesList = []
+        self.selectedAttributes.clear()
         if layerName != "":         
             layer = qgis.QgsMapLayerRegistry.instance().mapLayersByName(layerName)[0]
             fieldList = [field.name()
                for field in list(layer.pendingFields().toList())
                if field.type() in (QtCore.QVariant.Double, QtCore.QVariant.Int)]
-            self.inputValue.addItems(fieldList)
+            # print fieldList
+            self.availableAttributes.addItems(fieldList)
 
+
+            
+    def populateSelectedAttributes( self):
+
+        layerName = self.inputLayer.currentText()
+        self.selectedAttributes.clear()
+        if layerName != "":         
+            layer = qgis.QgsMapLayerRegistry.instance().mapLayersByName(layerName)[0]
+            fieldList = [field.name()
+               for field in list(layer.pendingFields().toList())
+               if field.type() in (QtCore.QVariant.Double, QtCore.QVariant.Int)]
+            # print fieldList
+            self.selectedAttributes.addItems(self.selectedAttributesList)
 
     def browse( self ):
 

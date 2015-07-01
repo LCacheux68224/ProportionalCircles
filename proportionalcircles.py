@@ -120,7 +120,16 @@ class ProportionalCircles:
     # run method that performs all the real work
     def run(self):
         # Populate the combo boxes
+        self.dlg.onlyLegend.setEnabled(False)
         self.dlg.populateLayers()
+        if self.dlg.analysisLayer.currentText() == '' :
+		    self.dlg.autoScale.setEnabled(False)
+		    self.dlg.customScale.setChecked(True)
+        else :
+		    self.dlg.autoScale.setEnabled(True)
+		    self.dlg.autoScale.setChecked(True)			
+			
+			
         self.dlg.circlesFileName.clear()
         self.dlg.legendFileName.clear()
         # show the dialog
@@ -134,7 +143,8 @@ class ProportionalCircles:
 	    # do something useful (delete the line containing pass and
 	    # substitute with your code)
 
-	    if self.dlg.inputValue.currentText() == '':
+	    # if self.dlg.inputValue.currentText() == '':
+	    if len(self.dlg.selectedAttributesList) < 1:
 	            iface.messageBar().pushMessage("Error", " No valid datas" , level = QgsMessageBar.WARNING, duration = 10)
             elif (self.dlg.shapefileOutput.isChecked() and self.dlg.circlesFileName.text() == '')  :
                     iface.messageBar().pushMessage("Shapefile error ", " Wrong or missing file name" , level = QgsMessageBar.WARNING, duration = 10)
@@ -144,16 +154,24 @@ class ProportionalCircles:
 
 		    inputLayer = self.ftu.getMapLayerByName(self.dlg.inputLayer.currentText())
 
-		    valueFieldName = self.dlg.inputValue.currentText()
-		    valueFieldIndex = inputLayer.fieldNameIndex(valueFieldName)
+		    # valueFieldName = self.dlg.inputValue.currentText()
+		    valueFieldNames = self.dlg.selectedAttributesList
+                    valueFieldIndex = []
+                    nbSector = len(self.dlg.selectedAttributesList)
+                    angleEnd = 2 * math.pi /nbSector
+                    sectorAngle = 2 * math.pi / nbSector  
+                    for i in xrange(0 , len(valueFieldNames)) :
+                        valueFieldIndex.append(inputLayer.fieldNameIndex(valueFieldNames[i]))
+		    # valueFieldIndex = inputLayer.fieldNameIndex(valueFieldName)
 		    maxValue, totalColumn, newTable, missingValues = self.newSortedAttributeTable(inputLayer, valueFieldIndex)
+		    
 
 		    # Scale 
 		    if self.dlg.autoScale.isChecked():		# automatic scale : total of the areas of the circles = 1/7 area of the analysis area
 		        analysisLayer = self.ftu.getMapLayerByName(self.dlg.analysisLayer.currentText())
 		        customScale = False
 		        analysisArea = self.layerArea(analysisLayer)
-		        coeff = math.sqrt(analysisArea/(7*math.pi*totalColumn))
+		        coeff = math.sqrt(nbSector*analysisArea/(7*math.pi*totalColumn))
 		        scaleOk = True
 
 		    else:  						# custom scale
@@ -186,8 +204,17 @@ class ProportionalCircles:
 				iLabel = '_'+str(i)
                         radiusLabel += iLabel
 
+                        # add a number to the fiel name 'ROW' if the fiel stil exist in the attribute table. ex: ROW_1
+			rowLabel, iLabel = QtGui.QApplication.translate("ProportionalCircles",\
+				QtGui.QApplication.translate("ProportionalCircles","VARNAME", None, QtGui.QApplication.UnicodeUTF8), None, QtGui.QApplication.UnicodeUTF8) , ''
+			i = 0
+                        while inputLayer.fieldNameIndex(rowLabel+iLabel) >=0:
+				i += 1
+				iLabel = '_'+str(i)
+                        rowLabel += iLabel
+
 		        # add RADIUS AND VALUE to attributes table
-		        newAttributesFieldsList.extend([QgsField(radiusLabel, QVariant.Double, "numeric", 10, 1),QgsField(valueLabel, QVariant.Double, "numeric", 10, 3)])
+		        newAttributesFieldsList.extend([QgsField(radiusLabel, QVariant.Double, "numeric", 10, 1),QgsField(valueLabel, QVariant.Double, "numeric", 10, 3),QgsField(rowLabel, QVariant.Double, "string", 255)])
 		        
 		        # new memory layer
 		        crsString = inputLayer.crs().authid()  # crs of input layer
@@ -220,7 +247,8 @@ class ProportionalCircles:
 		            attrs = ft[3]          # origin attributes
 		            absoluteValue = ft[0]      
 		            value = ft[1]         
-
+                            sectorNr = ft[4]
+                            print sectorNr
 		            # Calculate radius
 		            if absoluteValue !=0.0:    
 		                if customScale:
@@ -230,11 +258,17 @@ class ProportionalCircles:
 
 		                outFeat_centroids.setGeometry(center) # centre du cercle
 		                point = QgsGeometry(outFeat_centroids.geometry())
-                                bufferPrecision = 3 + 20.0*radius /5000
-		                circle = point.buffer(radius,bufferPrecision)  # buffer circulaire autour d'un point
+                                bufferPrecision = 4.0 *( 3.0 + 20.0*radius /maxRadius)
+		                # circle = point.buffer(radius,bufferPrecision)  # buffer circulaire autour d'un point
+                                angleStart = 0
+                                # angleEnd = math.pi/6
+
+				sector = self.drawSector(center.asPoint(), radius, angleStart, angleEnd, nbSector, sectorAngle, sectorNr, bufferPrecision)
 		                outFeat = QgsFeature()
-		                outFeat.setGeometry(circle)
-		                attrs.extend([radius, value])
+		                #outFeat.setGeometry(circle)
+                                # outFeatLigne.setGeometry(QgsGeometry.fromPolygon([listePoints2]))
+		                outFeat.setGeometry(QgsGeometry.fromPolygon([sector]))
+		                attrs.extend([radius, value, valueFieldNames[sectorNr]])
 		                outFeat.setAttributes(attrs)
 		                circlesList.append(outFeat)  
 		                del outFeat
@@ -333,7 +367,7 @@ class ProportionalCircles:
 		            circleRadius = radiusList[i]
 		            point.setGeometry(QgsGeometry.fromPoint(QgsPoint(xLegend, yCenter)))
 			    point2 = QgsGeometry(point.geometry())
-                            bufferPrecision = 3 + 20.0*radius /5000
+                            bufferPrecision = 3 + 20.0*radius /maxRadius
 			    circle = point2.buffer(circleRadius,bufferPrecision)
 			    outFeat2.setGeometry(circle)
                             yLabel = -radiusList[i]
@@ -408,6 +442,8 @@ class ProportionalCircles:
         totalOfColumn = 0
         missingValues = 0
         maxAbsoluteValue = 0
+        coeff = len(columnNumber)
+        print columnNumber
 
 	if inputLayer.selectedFeatures():
             features = inputLayer.selectedFeatures()
@@ -415,11 +451,13 @@ class ProportionalCircles:
 	    features = inputLayer.getFeatures()
 
         for elem in features : 
-	    value = elem.attributes()[columnNumber]
-	    if value:
-		totalOfColumn += abs(value)
-                if abs(value)>maxAbsoluteValue:
-                    maxAbsoluteValue = abs(value)
+            for sectorNr in xrange(0, len(columnNumber)):
+                value = elem.attributes()[columnNumber[sectorNr]] 
+                #print i, value
+	        if value:
+	            totalOfColumn += abs(value)
+                    if abs(value)>maxAbsoluteValue:
+                        maxAbsoluteValue = abs(value)
 
         if not inputLayer.selectedFeatures() or self.dlg.selectedFeatures.isChecked():
             features = inputLayer.getFeatures()
@@ -427,14 +465,18 @@ class ProportionalCircles:
 	    features = inputLayer.selectedFeatures()
 
         for elem2 in features : 
-            value = elem2.attributes()[columnNumber]
-            if not value:
-                if value !=0: missingValues +=1
-            else:
-                listeElements = [abs(value), value, elem2.geometry().centroid() , elem2.attributes()]
-                table += [listeElements]
+            for sectorNr in xrange(0, len(columnNumber)):
 
-        table.sort()   # from the smalest circles to the bigest 
+                value = elem2.attributes()[columnNumber[sectorNr]]
+                if not value:
+                    if value !=0: missingValues +=1
+                else:
+                    listeElements = [abs(value), value, elem2.geometry().centroid() , elem2.attributes(), sectorNr]
+                    table += [listeElements]
+
+        #table = sorted(table, reverse = True)   # from the smalest circles to the bigest 
+		table.sort()
+        print maxAbsoluteValue
 
         return maxAbsoluteValue, totalOfColumn, table, missingValues
 
@@ -470,6 +512,31 @@ class ProportionalCircles:
 
         return points
 
+    def drawSector(self, center, radius, angleStart, angleStop, nbSector, sectorAngle, sectorNr, precision):
+        '''
+            draw a sector
+        '''
+        sectorAngle2 = 2.0 * math.pi / nbSector
+        angleStart2 = sectorAngle2*sectorNr
+        # angle = sectorAngle*sectorNr
+        angleStop2 = angleStart2 + sectorAngle2
+        pas = precision/radius
+        if nbSector > 1 :
+            sector = [QgsPoint(center)]
+        else :
+            sector = []
+        angle = angleStart2
+        sector.append(QgsPoint((center[0] + radius * math.sin(angleStart2)), (center[1] + radius * math.cos(angleStart2)) )) 
+        while angle < angleStop2 :
+            x1 = center[0] + radius * math.sin(angle)
+            y1 = center[1] + radius * math.cos(angle)
+            sector.append(QgsPoint(x1,y1))
+            angle += pas   
+        sector.append(QgsPoint((center[0] + radius * math.sin(angleStop2)), (center[1] + radius * math.cos(angleStop2)) ))  
+        if nbSector > 1.0 :
+            sector.append(QgsPoint(center))
+        # print center[1] + radius * math.sin(angleStart2), center[1] + radius * math.sin(angleStop2), center[1]
+        return sector
 
 
 
