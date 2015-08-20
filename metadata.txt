@@ -16,7 +16,7 @@ description=Proportional Circles are used for showing a quantity, for example th
 description[fr]=L'analyse en ronds proportionnels est utilisée pour représenter des effectifs, par exemple la population de communes de pays. Cette extension génère deux fonds : un fond cartographique pour l'analyse et un autre pour la légende.
 about=The area of each circle is proportional to a value in the attribute table of a points or polygons layer. The scale can either be fixed by the user or automatically calculated. In case of an automatic scale, the total of the areas of the circles equals 1/7 of the area of a reference polygons layer chosen by the user. The automatic legend of the circles contains three circles (corresponding to max value, max value / 3 and max value / 9), but it is also possible to use custom values.
 about[fr]=La surface de chaque cercle calculée pour être proportionnelle à une variable de la table d'attributs d'un fond de points ou de polygones. L'échelle peut être fixée soit par l'utilisateur, par exemple pour obtenir des cartes comparables, soit calculée automatiquement. Dans le cas de l'échelle automatique, la somme des aires des cercles est égale à 1/7 de la surface d'un fond de polygones de référence choisi par l'utilisateur. La légende des cercles représente soit les valeurs max, max/3 et max/9 de manière automatique, soit des valeurs définies par l'utilisateur.
-version=1.2
+version=1.2.0.5
 author=Lionel Cacheux
 email=lionel.cacheux@gmx.fr
 

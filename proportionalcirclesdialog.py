@@ -31,6 +31,8 @@ import fTools
 path = os.path.dirname(fTools.__file__)
 ftu = imp.load_source('ftools_utils', os.path.join(path,'tools','ftools_utils.py'))
 
+from qgis.gui import QgsMessageBar
+from qgis.utils import iface
 
 # create the dialog for zoom to point
 
@@ -48,7 +50,8 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
         self.autoScale.toggled.connect(self.radio_scale)
         self.shapefileOutput.toggled.connect(self.radio_shapefile)
 	self.buttonBox.rejected.connect(self.reject)
-	self.buttonBox.accepted.connect(self.accept)	
+	# self.buttonBox.accepted.connect(self.accept)	
+	self.buttonBox.accepted.connect(self.testSelectedOptions)	
         #QObject.connect(self.btnAdd, SIGNAL("clicked()"), self.onAdd)
 
         self.inputLayer.currentIndexChanged.connect(self.populateSelectedAttributes)
@@ -56,7 +59,9 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
         self.oldPath = ''
         self.selectFileName.clicked.connect(self.browse)
         self.btnAdd.clicked.connect(self.onAdd)
+        self.availableAttributes.doubleClicked.connect(self.onAdd)
         self.btnRemove.clicked.connect(self.onRemove)
+        self.selectedAttributes.doubleClicked.connect(self.onRemove)
 
     def onAdd(self):
         selectedItem = self.availableAttributes.currentItem()
@@ -171,5 +176,49 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
             return
         self.circlesFileName.setText(fileName)
         self.legendFileName.setText(legendeFileName)
+
+    def testSelectedOptions( self ):
+
+        # list of custom radiuses for the circles in the legend
+        legendCustomValues = self.legendCustomValues.text()
+        legendCustomValues = legendCustomValues.strip().replace(';',' ')
+        self.legendValuesList = legendCustomValues.split()
+        if len(self.legendValuesList) == 0:  # automatic VALUES for the circles in the legend 
+            legendError = False
+            self.legendValuesList = []
+        else:
+            try:			
+	       for i in range(len(self.legendValuesList)):  # custom values for the circles in the legend
+	           self.legendValuesList[i] = float(self.legendValuesList[i])
+                   self.legendValuesList.sort()
+                   legendError = False
+            except:   # if error in customisation -> automatic values for legend + warning message
+                legendError = True
+
+	if len(self.selectedAttributesList) < 1:
+            QtGui.QMessageBox.warning(self, "ProportionalCircles", \
+                QtGui.QApplication.translate("ProportionalCircles", \
+                "Please select at least one an attribute", None, QtGui.QApplication.UnicodeUTF8))
+ 
+        elif (self.shapefileOutput.isChecked() and self.circlesFileName.text() == '')  :
+            QtGui.QMessageBox.warning(self, "ProportionalCircles", \
+                QtGui.QApplication.translate("ProportionalCircles", \
+                "Wrong or missing file name", None, QtGui.QApplication.UnicodeUTF8)) 
+
+        elif (self.customScale.isChecked() and self.maxCustomValue.value() * self.maxCustomRadius.value() == 0):
+            QtGui.QMessageBox.warning(self, "ProportionalCircles", \
+                QtGui.QApplication.translate("ProportionalCircles", \
+                "Radius and value cannot be equal to zero for a custom scale", None, QtGui.QApplication.UnicodeUTF8)) 
+
+        elif legendError:
+            QtGui.QMessageBox.warning(self, "ProportionalCircles", \
+                QtGui.QApplication.translate("ProportionalCircles", \
+                "Error in custom values for legend", None, QtGui.QApplication.UnicodeUTF8)) 
+
+	else :
+
+            self.accept()
+
+
 
 
