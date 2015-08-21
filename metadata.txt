@@ -36,7 +36,7 @@ tracker=https://github.com/LCacheux68224/ProportionalCircles/issues
 repository=https://github.com/LCacheux68224/ProportionalCircles
 icon=iconRonds.png
 # experimental flag
-experimental=True
+experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version
 deprecated=False
