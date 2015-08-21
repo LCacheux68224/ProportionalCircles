@@ -4,43 +4,6 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import QVariant
 from qgis.core import *
 import math
-
-def layerArea(polygonLayer):
-    """
-        Area of a polygon layer
-        Usage : area = layerArea(polygonLayer)
-    """
-    if polygonLayer.wkbType() not in [QGis.WKBPolygon, QGis.WKBMultiPolygon] :
-        raise NameError('must be a polygon layer')
-    if polygonLayer.selectedFeatures():
-        features = polygonLayer.selectedFeatures()
-    else :
-        features = polygonLayer.getFeatures() 
-    surface = sum([element.geometry().area() for element in features])
-    return surface
-    
-def summaryAttributes(layer, columnNumber):
-    """
-        Absolute max, and total of a list of columns
-        Usage : (total, max)  = summaryAttributes(layer, [list of columnNumbers])
-    """
-    absoluteValuesList = []
-    for col in columnNumber :
-        if layer.selectedFeatures():
-            features = layer.selectedFeatures()
-        else :
-            features = layer.getFeatures()
-        listElements = [abs(element.attributes()[col]) \
-            for element in features if element.attributes()[col]]
-        absoluteValuesList.extend(listElements)
-    lenList = len(absoluteValuesList)
-    if lenList > 0 :
-        maximumAbsoluteValue = max(absoluteValuesList)
-        sumAbsoluteValues = sum(absoluteValuesList)
-    else :
-        maximumAbsoluteValue = NULL
-        sumAbsoluteValues = NULL       
-    return sumAbsoluteValues, maximumAbsoluteValue
     
 def drawSector(center, radius, startAngle, stopAngle, precision):
     sector = [QgsPoint(center)]
@@ -58,50 +21,79 @@ def drawSector(center, radius, startAngle, stopAngle, precision):
     
 def ronds(inputLayer, analysisAttributes, scale, outputLayerName, extendedAnalysis = False):
     """
-        Anlyse en ronds ou en secteurs
-        Usage : rond(inputLayer, analysisAttributes, scale, extendedAnalysis = False)
-          inputLayer = fond a analyser (points ou polygones)
-          analysisAttributes = numero ou liste des numeros/nom des colonnes correspondant a la ou aux variables a analyser
-          scale : contour pour une echelle automatique ou tuple (valMax, rayonMax)
-          extendedAnalysis : si on veut une analyse etendue (True/False) 
-       ------- 
         Proportional circles or sectors
           inputLayer = input layer (points or polygons)
-          analysisAttributes = index or names of the variables
+          analysisAttributes = list of index or names of the variables to reprensend
           scale : polygon layer for an automatic scale or tuple (maxValue, maxRadius) for a custom scale
           extendedAnalysis : True for an extended analysis (True/False) 
+          
+        Outputs:
+          resultLayer,
+          maximumValue, maximumRadius, 
+          missingValues = number of missing values (or =0), 
+          crsString = string of the input layer
     """
+    # convert list of selected attributes names to a list of attributes index
     if isinstance(analysisAttributes, str):
         analysisAttributes = (analysisAttributes,)
     listeVariable = [inputLayer.fieldNameIndex(element) \
                     for element in analysisAttributes]
+                    
     nbSector = len(analysisAttributes)
     sectorAngle = 2.0 * math.pi / nbSector
-    sumValues, maximumValue = summaryAttributes(inputLayer, listeVariable)
 
+    # convert the values to absolute values
+    absoluteValuesList = []
+    for col in listeVariable :
+        # restrict the input layer to the selected features layer if necessary
+        if inputLayer.selectedFeatures():
+            features = inputLayer.selectedFeatures()
+        else :
+            features = inputLayer.getFeatures()
+        listElements = [abs(element.attributes()[col]) \
+            for element in features if element.attributes()[col]]
+        absoluteValuesList.extend(listElements)
 
-    if sumValues :
-        if isinstance(scale, QgsVectorLayer):  # automatic scale 
+    if len(absoluteValuesList) > 0 :   # if not -> nothinq to do
+        maximumValue = max(absoluteValuesList)
+        sumValues = sum(absoluteValuesList)
+
+        # automatic scale 
+        if isinstance(scale, QgsVectorLayer):  
             contour = scale
-            coeff = (layerArea(contour)/(7*(sumValues/nbSector)))**.5
-        else:  # custom scale
+            # restrict the reference layer to the selected features layer if necessary
+            if contour.selectedFeatures():
+                features = contour.selectedFeatures()
+            else :
+                features = contour.getFeatures() 
+            layerArea = sum([element.geometry().area() for element in features])
+            coeff = (layerArea/(7*(sumValues/nbSector)))**.5
+            
+        # custom scale
+        else:  
             coeff = scale[1] * (math.pi/scale[0])**.5
         maximumRadius = coeff * (maximumValue/math.pi) ** .5
         
         newAttributeList = list(inputLayer.pendingFields())    
         
-        tableau =[]
         missingValues = 0
-        sectorNr = 0
-        field_names = [field.name() for field in inputLayer.pendingFields() ]
-        for col in listeVariable :
+        sectorNr = 0        
+        
+        # create a temporary table tableau = [radius, outfeat]
+        tableau =[]
 
+        field_names = [field.name() for field in inputLayer.pendingFields() ]
+
+        for col in listeVariable :
             startAngle = sectorAngle * sectorNr
             stopAngle = startAngle + sectorAngle
+            
+            # restrict the input layer to the selected features layer if NO extended analysis
             if inputLayer.selectedFeatures() and not extendedAnalysis:
                 features = inputLayer.selectedFeatures()
             else :
                 features = inputLayer.getFeatures()
+
             for element in features :
                 currentValue = element.attributes()[col]
                 if currentValue and currentValue !=0:
@@ -109,29 +101,38 @@ def ronds(inputLayer, analysisAttributes, scale, outputLayerName, extendedAnalys
                     radius = coeff * (absValue/math.pi) ** .5
                     center = element.geometry().centroid()           
                     outFeat = QgsFeature()
-                    precision = 4*(3.0 + 10.0 * radius / maximumRadius)  
-                    if nbSector == 1:   # ronds simples -> buffer
+                    precision = (8.0 + 8.0 * (radius / maximumRadius)**4)  
 
+                    if nbSector == 1:   # draw circles -> buffer
                         outFeat.setGeometry(center.buffer(radius,precision))
-                    else :              # secteurs
+                    else :              # draw sectors
                         outFeat.setGeometry(QgsGeometry.fromPolygon([drawSector(\
                             center.asPoint(), radius,startAngle, stopAngle, precision)]))
+
+                    # add value and radius to the new attribute table
                     originLine = element.attributes()
                     originLine.extend([currentValue,radius])
+
+                    # for sectors add also the name of the variable
                     if nbSector > 1:
                         originLine.append(field_names[col])
                     outFeat.setAttributes(originLine)
                     tableau.append((radius, outFeat))
+
                 else:
+                    # count the missing or values equal to zero
                     missingValues +=1
             sectorNr += 1
-        tableau.sort(reverse = True)
-        listElements = [elem[1] for elem in tableau]
 
+        # sort the features to put the smal geometries to the front
+        tableau.sort(reverse = True)
+
+        listElements = [elem[1] for elem in tableau]
         features =  inputLayer.getFeatures()    
         f = features.next()
-        # Ajout des colonnes 'VAL' pour valeur et 'R' pour rayon
-        # Incrementation du nom de ces colonnes si celles-ci existent deja dans la table attributaire d'origine.
+
+        # add 'VAL' for value and 'R' for radius to the attributes
+        # Increment 'VAL' and 'R' if still exist in the origin attribute table 
         attributeList = [element.name() for element in f.fields().toList()]
         valueName, radiusName, varName = u'VAL', u'R', u'VARIABLE'
         i, iLabel = 0, ''
@@ -144,14 +145,16 @@ def ronds(inputLayer, analysisAttributes, scale, outputLayerName, extendedAnalys
         radiusName += iLabel
         varName += iLabel
         
-        # Creation d'une couche de polygones
-        # projection = 'Polygon?crs=epsg:2154'
-        # projection = inputLayer.crs().authid()
+        # New polygon layer
+
+        # crs of the input layer
         if 'EPSG' in inputLayer.crs().authid() :
             crsString = inputLayer.crs().authid()
         else : 
             crsString = inputLayer.crs().toWkt()
+            
         resultLayer = QgsVectorLayer('Polygon?crs='+crsString, outputLayerName,'memory')
+        
         # resultLayer.startEditing()
         pr = resultLayer.dataProvider()
         newAttributeList.extend([QgsField(valueName, QVariant.Double, "Real", 10,3)])
@@ -161,17 +164,28 @@ def ronds(inputLayer, analysisAttributes, scale, outputLayerName, extendedAnalys
 
         pr.addAttributes(newAttributeList)
         resultLayer.updateFields()
-
         pr.addFeatures( listElements )
         # resultLayer.commitChanges()
         resultLayer.updateExtents()
 
-        return resultLayer, maximumValue, maximumRadius, missingValues
+        return resultLayer, maximumValue, maximumRadius, missingValues, crsString
     else :
-        return NULL, NULL, NULL, NULL
+        return NULL, NULL, NULL, NULL, NULL
 
 
-def legendeRonds(crs, legendCoordinates, scale, legendLayerName, nbSector=1, listValues=[]):
+def legendeRonds(crsString, legendCoordinates, scale, legendLayerName, nbSector=1, listValues=[]):
+    """
+        Legend for the proportional circles or sectors
+          crsString = crs used for the output layer
+          legendCoordinates = coordinates of the legend
+          scale = (maximumValue, maximumRadius)
+          legendLayerName = name of the output layer
+          nbSector = number of sectors (default = 1 for circles)
+          listValues = list of values to reprensent in the legend
+          
+        Output:
+          resultLayer
+    """    
     coeff = scale[1] * (math.pi/scale[0])**.5
     if listValues == [] :
         maximumValue = scale[0]
@@ -180,10 +194,12 @@ def legendeRonds(crs, legendCoordinates, scale, legendLayerName, nbSector=1, lis
         listValues.sort(reverse = True)
         maximumValue = max(listValues)
 
-        sectorNr = 0
+        # sectorNr = 0
     maximumRadius = coeff * (maximumValue/math.pi) ** .5
+    
+    # create a new layer for the legend
 
-    resultLayer = QgsVectorLayer('Polygon?crs='+crs, legendLayerName,'memory')
+    resultLayer = QgsVectorLayer('Polygon?crs='+crsString, legendLayerName,'memory')
     # resultLayer.startEditing()
     pr = resultLayer.dataProvider()
     newAttributeList = []
@@ -191,14 +207,19 @@ def legendeRonds(crs, legendCoordinates, scale, legendLayerName, nbSector=1, lis
     newAttributeList.extend([QgsField(valueName, QVariant.Double, "Real", 10,3)])
     newAttributeList.extend([QgsField(radiusName, QVariant.Double, "Real", 10,1)])
     newAttributeList.extend([QgsField(varName, QVariant.String, "String", 10)])
+    # X, Y ALPHA attributes for the position of the labels
     newAttributeList.extend([QgsField('X', QVariant.Double, "Real", 10,3)])
     newAttributeList.extend([QgsField('Y', QVariant.Double, "Real", 10,3)])
     newAttributeList.extend([QgsField('ALPHA', QVariant.Double, "Real", 10,3)])
     pr.addAttributes(newAttributeList)
     resultLayer.updateFields()
+
     sectorAngle = 2.0 * math.pi / nbSector
     listGeom = []
     sectorNr = 0
+
+    # draw the sectors / circles in the legend
+
     for i in range(nbSector):
         for element in listValues :
             sectorNr = 1+i
@@ -212,30 +233,40 @@ def legendeRonds(crs, legendCoordinates, scale, legendLayerName, nbSector=1, lis
                 radius = coeff * (absValue/math.pi) ** .5
           
                 outFeat = QgsFeature()
-                precision = 4*(3.0 + 10.0 * radius / maximumRadius)  
-                if nbSector < 3:   # ronds simples -> buffer
+                precision = (8.0 + 8.0 * (radius / maximumRadius)**4)  
+
+                if nbSector < 3:
+                    # aling circles / half circles to the bottom
                     x = legendCoordinates[0]
                     y = legendCoordinates[1] + radius - maximumRadius
                     center = QgsGeometry.fromPoint(QgsPoint(x, y))
+
                     if nbSector == 1:
+                        # draw circles (buffer)
                         outFeat.setGeometry(center.buffer(radius,precision))
-                        # outFeat.setAttributes([element,radius])
+
                     else :
+                        # draw sectors
                         outFeat.setGeometry(QgsGeometry.fromPolygon([drawSector(\
                         center.asPoint(), radius,startAngle, stopAngle, precision)]))
-                    # outFeat.setAttributes([element,radius, sectorNr])
-                else :              # secteurs
+
+                else :              
+                    # algin to the center
                     x, y = legendCoordinates[0], legendCoordinates[1] 
                     center = QgsGeometry.fromPoint(QgsPoint(x,y))
                     outFeat.setGeometry(QgsGeometry.fromPolygon([drawSector(\
-                    center.asPoint(), radius,startAngle, stopAngle, precision)]))
+                        center.asPoint(), radius,startAngle, stopAngle, precision)]))
+
+                # fill attribute table
                 if sectorNr == 1:
+                    # fill the coordinates of the labels
                     outFeat.setAttributes([element,radius, sectorNr,x+1.5*maximumRadius,y+radius,NULL])
                 else:
                     outFeat.setAttributes([element,radius, sectorNr,NULL,NULL,NULL])
 
             listGeom.append(outFeat)
-    # lines
+
+    # draw the lines in the legend (flat rectangle)
     
     for element in listValues :
         lineLength = maximumRadius * 1.25
@@ -255,10 +286,8 @@ def legendeRonds(crs, legendCoordinates, scale, legendLayerName, nbSector=1, lis
         outFeat2.setAttributes([element,NULL, 'L',NULL,NULL,NULL])
         listGeom.append(outFeat2)
     
-
     pr.addFeatures( listGeom )
     resultLayer.updateExtents()
-
 
     return resultLayer
         
