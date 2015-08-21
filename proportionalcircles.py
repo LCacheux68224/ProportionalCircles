@@ -153,11 +153,6 @@ class ProportionalCircles:
 
                     # recover the options from the plugin gui
                     inputLayer = self.ftu.getMapLayerByName(self.dlg.inputLayer.currentText())
-                    if 'EPSG' in inputLayer.crs().authid() :
-                        crsString = inputLayer.crs().authid()
-                    else : 
-                        crsString = inputLayer.crs().toWkt()
-
                             
                     resultNameLayer = QtGui.QApplication.translate("ProportionalCircles","Proportional_Circles_", None, QtGui.QApplication.UnicodeUTF8)+inputLayer.name()
                     valueFieldNames = self.dlg.selectedAttributesList
@@ -172,7 +167,7 @@ class ProportionalCircles:
                         scale = ( self.dlg.maxCustomValue.value(), self.dlg.maxCustomRadius.value() )
 
                     # proceed analysis
-                    outputLayer, maximumValue, maximumRadius, missingValues = ronds(inputLayer, valueFieldNames, scale, resultNameLayer, extendedAnalysis)
+                    outputLayer, maximumValue, maximumRadius, missingValues, crsString = ronds(inputLayer, valueFieldNames, scale, resultNameLayer, extendedAnalysis)
 
                     # Output
                     if outputLayer :   # if resultLayer is Ok...
@@ -207,7 +202,7 @@ class ProportionalCircles:
                         # coordinates of the legend
                         coeff = maximumRadius * (math.pi/maximumValue)**.5
                         maxRadiusLegend = coeff * (maximumValue/math.pi) ** .5  
-                        xLegend = outputLayer.extent().xMaximum() + maxRadiusLegend
+                        xLegend = outputLayer.extent().xMaximum() + maxRadiusLegend *2
                         yLegend = (outputLayer.extent().yMinimum() + outputLayer.extent().yMaximum())*.5    
 
                         legendLayer = legendeRonds(crsString, (xLegend,yLegend), (maximumValue,maximumRadius), 'legende rond', nbSector, self.dlg.legendValuesList)
@@ -238,7 +233,9 @@ class ProportionalCircles:
 
 
                     else :                  # Warning message if resultLayer is empty...
-                        iface.messageBar().pushMessage("Error", " No valid datas to represent" , level = QgsMessageBar.CRITICAL)
+                        textError1 = QtGui.QApplication.translate("ProportionalCircles","Input error ", None, QtGui.QApplication.UnicodeUTF8)
+                        textError2 = QtGui.QApplication.translate("ProportionalCircles","No valid datas available in the attribute table", None, QtGui.QApplication.UnicodeUTF8)
+                        iface.messageBar().pushMessage(textError1, textError2 , level = QgsMessageBar.CRITICAL)
 
 
                 finally :
