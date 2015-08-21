@@ -19,12 +19,12 @@
     <message>
         <location filename="proportionalcircles.py" line="146"/>
         <source>Input error </source>
-        <translation type="unfinished">Erreur</translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <location filename="proportionalcircles.py" line="147"/>
-        <source> No valid datas available in the attribute table</source>
-        <translation type="unfinished"></translation>
+        <source>No valid datas available in the attribute table</source>
+        <translation>Toutes les valeurs de la variable sélectionnée sont soit nulles, soit manquantes</translation>
     </message>
     <message>
         <location filename="proportionalcircles.py" line="157"/>
