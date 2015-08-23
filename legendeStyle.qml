@@ -57,16 +57,16 @@
   </renderer-v2>
   <customproperties>
     <property key="labeling" value="pal"/>
-    <property key="labeling/dataDefined/PositionX" value="1~~0~~~~X"/>
-    <property key="labeling/dataDefined/PositionY" value="1~~0~~~~Y"/>
-    <property key="labeling/dataDefined/Rotation" value="1~~0~~~~ALPHA"/>
+    <property key="labeling/addDirectionSymbol" value="false"/>
     <property key="labeling/dataDefined/Show" value="1~~1~~&quot;SECT&quot; = '1'~~"/>
     <property key="labeling/displayAll" value="true"/>
     <property key="labeling/enabled" value="true"/>
+    <property key="labeling/dataDefined/OffsetXY" value="1~~0~~~~POS_LEG"/>
+    <property key="labeling/labelOffsetInMapUnits" value="true"/>
     <property key="labeling/fieldName" value=" format_number( VAL,0)"/>
     <property key="labeling/fontSize" value="10"/>
     <property key="labeling/fontSizeInMapUnits" value="false"/>
     <property key="labeling/isExpression" value="true"/>
-
+    <property key="labeling/placement" value="1"/>
   </customproperties>
 </qgis>

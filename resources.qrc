@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/plugins/ProportionalCircles" >
         <file>iconRonds.png</file>
+        <file>iconLegendeRonds.png</file>
     </qresource>
 </RCC>

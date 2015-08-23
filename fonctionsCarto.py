@@ -211,6 +211,7 @@ def legendeRonds(crsString, legendCoordinates, scale, legendLayerName, nbSector=
     newAttributeList.extend([QgsField('X', QVariant.Double, "Real", 10,3)])
     newAttributeList.extend([QgsField('Y', QVariant.Double, "Real", 10,3)])
     newAttributeList.extend([QgsField('ALPHA', QVariant.Double, "Real", 10,3)])
+    newAttributeList.extend([QgsField('POS_LEG', QVariant.String, "String", 30)])
     pr.addAttributes(newAttributeList)
     resultLayer.updateFields()
 
@@ -250,6 +251,7 @@ def legendeRonds(crsString, legendCoordinates, scale, legendLayerName, nbSector=
                         outFeat.setGeometry(QgsGeometry.fromPolygon([drawSector(\
                         center.asPoint(), radius,startAngle, stopAngle, precision)]))
 
+
                 else :              
                     # algin to the center
                     x, y = legendCoordinates[0], legendCoordinates[1] 
@@ -257,12 +259,14 @@ def legendeRonds(crsString, legendCoordinates, scale, legendLayerName, nbSector=
                     outFeat.setGeometry(QgsGeometry.fromPolygon([drawSector(\
                         center.asPoint(), radius,startAngle, stopAngle, precision)]))
 
+                centroidFeature = outFeat.geometry().centroid().asPoint()
                 # fill attribute table
                 if sectorNr == 1:
                     # fill the coordinates of the labels
-                    outFeat.setAttributes([element,radius, sectorNr,x+1.5*maximumRadius,y+radius,NULL])
+                    labelPosition = str((1.7*round(maximumRadius))-(centroidFeature[0]-x))+','+str(-1.0*round(radius)+(centroidFeature[1]-y))
+                    outFeat.setAttributes([element,radius, sectorNr,NULL,NULL,NULL,labelPosition])
                 else:
-                    outFeat.setAttributes([element,radius, sectorNr,NULL,NULL,NULL])
+                    outFeat.setAttributes([element,radius, sectorNr,NULL,NULL,NULL,NULL])
 
             listGeom.append(outFeat)
 
