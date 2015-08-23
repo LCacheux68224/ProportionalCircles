@@ -37,7 +37,7 @@ PY_FILES = proportionalcircles.py proportionalcirclesdialog.py __init__.py
 
 EXTRAS = iconRonds.png metadata.txt
 
-UI_FILES = ui_proportionalcircles.py
+UI_FILES = ui_proportionalcircles.py ui_legendonly.py
 
 RESOURCE_FILES = resources_rc.py
 
