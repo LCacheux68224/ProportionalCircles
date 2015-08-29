@@ -49,15 +49,18 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
         self.setupUi(self)
         self.autoScale.toggled.connect(self.radio_scale)
         self.shapefileOutput.toggled.connect(self.radio_shapefile)
+        self.legendOnlyShapefileOutput.toggled.connect(self.legendOnlyRadio_shapefile)
 	self.buttonBox.rejected.connect(self.reject)
-	# self.buttonBox.accepted.connect(self.accept)	
+	self.legendOnlyButtonBox.rejected.connect(self.reject)	
 	self.buttonBox.accepted.connect(self.testSelectedOptions)	
+	self.legendOnlyButtonBox.accepted.connect(self.legendOnlyTestSelectedOptions)
         #QObject.connect(self.btnAdd, SIGNAL("clicked()"), self.onAdd)
 
         self.inputLayer.currentIndexChanged.connect(self.populateSelectedAttributes)
         self.inputLayer.currentIndexChanged.connect(self.populateAttributes)
         self.oldPath = ''
         self.selectFileName.clicked.connect(self.browse)
+        self.legendOnlySelectFileName.clicked.connect(self.legendOnlyBrowse)
         self.btnAdd.clicked.connect(self.onAdd)
         self.availableAttributes.doubleClicked.connect(self.onAdd)
         self.btnRemove.clicked.connect(self.onRemove)
@@ -119,7 +122,17 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
                     self.legendFileName.clear()
                     self.selectFileName.setEnabled(False)
 
-
+    def legendOnlyRadio_shapefile(self):
+            if self.legendOnlyShapefileOutput.isChecked():
+                    self.legendOnlyAddCanevas.setEnabled(True)
+                    self.legendOnlyFileName.setEnabled(True)
+                    self.legendOnlySelectFileName.setEnabled(True)
+                    #self.addCanevas.setEnabled(True)
+            else:
+                    self.legendOnlyFileName.setEnabled(False)
+                    self.legendOnlyFileName.clear()
+                    self.legendOnlySelectFileName.setEnabled(False)
+                    self.legendOnlyAddCanevas.setEnabled(False)
 
     def populateLayers( self ):
 	self.inputLayer.clear()     #InputLayer
@@ -177,6 +190,19 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
         self.circlesFileName.setText(fileName)
         self.legendFileName.setText(legendeFileName)
 
+    def legendOnlyBrowse( self ):
+
+        fileName0 = QtGui.QFileDialog.getSaveFileName(self, 'Save as',
+                                        self.oldPath, "Shapefile (*.shp);;All files (*)")
+        legendOnlyFileName = os.path.splitext(str(fileName0))[0]+'.shp'
+        if os.path.splitext(str(fileName0))[0] != '':
+            self.oldPath = os.path.dirname(legendOnlyFileName)
+        # legendOnlyFileName = os.path.splitext(str(fileName0))[0]
+        legendOnlyLayername = os.path.splitext(os.path.basename(str(legendOnlyFileName)))[0]
+        if (legendOnlyLayername=='.shp'):
+            return
+        self.legendOnlyFileName.setText(legendOnlyFileName)
+
     def testSelectedOptions( self ):
 
         # list of custom radiuses for the circles in the legend
@@ -216,7 +242,46 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
                 "Error in custom values for legend", None, QtGui.QApplication.UnicodeUTF8)) 
 
 	else :
+            self.legendOnly = False
+            self.accept()
 
+
+    def legendOnlyTestSelectedOptions( self ):
+
+        # list of custom radiuses for the circles in the legend
+        legendOnlyCustomValues = self.legendOnlyCustomValues.text()
+        legendOnlyCustomValues = legendOnlyCustomValues.strip().replace(';',' ')
+        self.legendOnlyValuesList = legendOnlyCustomValues.split()
+        if len(self.legendOnlyValuesList) == 0:  # automatic VALUES for the circles in the legend 
+            legendError = False
+            self.legendOnlyValuesList = []
+        else:
+            try:			
+	       for i in range(len(self.legendOnlyValuesList)):  # custom values for the circles in the legend
+	           self.legendOnlyValuesList[i] = float(self.legendOnlyValuesList[i])
+                   self.legendOnlyValuesList.sort()
+                   legendError = False
+            except:   # if error in customisation -> automatic values for legend + warning message
+                legendError = True
+
+ 
+        if (self.legendOnlyShapefileOutput.isChecked() and self.legendOnlyFileName.text() == '')  :
+            QtGui.QMessageBox.warning(self, "ProportionalCircles", \
+                QtGui.QApplication.translate("ProportionalCircles", \
+                "Wrong or missing file name", None, QtGui.QApplication.UnicodeUTF8)) 
+
+        elif self.legendOnlyMaxCustomValue.value() * self.legendOnlyMaxCustomRadius.value() == 0 :
+            QtGui.QMessageBox.warning(self, "ProportionalCircles", \
+                QtGui.QApplication.translate("ProportionalCircles", \
+                "Radius and value cannot be equal to zero for a custom scale", None, QtGui.QApplication.UnicodeUTF8)) 
+
+        elif legendError:
+            QtGui.QMessageBox.warning(self, "ProportionalCircles", \
+                QtGui.QApplication.translate("ProportionalCircles", \
+                "Error in custom values for legend", None, QtGui.QApplication.UnicodeUTF8)) 
+
+	else :
+            self.legendOnly = True
             self.accept()
 
 

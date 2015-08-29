@@ -8,6 +8,11 @@
         <source>Proportional circles</source>
         <translation type="unfinished">Analyse en ronds proportionnels</translation>
     </message>
+    <message>
+        <location filename="proportionalcircles.py" line="82"/>
+        <source>Legend only</source>
+        <translation type="unfinished">Légende pour ronds proportionnels</translation>
+    </message>
 </context>
 <context>
     <name>ProportionalCircles</name>
@@ -95,7 +100,7 @@ de référence constitué de polygones</translation>
     <message>
         <location filename="ui_proportionalcircles.py" line="391"/>
         <source>Custom values in legend</source>
-        <translation type="unfinished">Valeurs personnalisées pour la légende</translation>
+        <translation>Valeurs personnalisées pour la légende</translation>
     </message>
     <message>
         <location filename="ui_proportionalcircles.py" line="392"/>
@@ -173,75 +178,27 @@ de référence constitué de polygones</translation>
         <translation>Analyse étendue</translation>
     </message>
     <message>
-        <location filename="ui_legendonly.py" line="501"/>
-        <source>Number of sectors</source>
-        <translation>Nombre de secteurs</translation>
-    </message>
-</context>
-<context>
-    <name>LegendOnly</name>
-    <message>
-        <location filename="ui_legendonly.ui" line="32"/>
-        <source>Legend for proportional circles</source>
-        <translation>Légende pour ronds/secteurs proportionnels</translation>
-    </message>
-    <message>
-        <location filename="ui_legendonly.ui" line="89"/>
+        <location filename="ui_proportionalcircles.py" line="407"/>
         <source>Scale</source>
         <translation>Échelle</translation>
     </message>
     <message>
-        <location filename="ui_legendonly.ui" line="112"/>
-        <source>Value</source>
-        <translation>Valeur</translation>
-    </message>
-    <message>
-        <location filename="ui_legendonly.ui" line="169"/>
-        <source>Radius (in meters)</source>
-        <translation>Rayon (en mètres)</translation>
-    </message>
-    <message>
-        <location filename="ui_legendonly.ui" line="258"/>
-        <source>Custom values in legend</source>
-        <translation type="unfinished">Valeurs personnalisées pour la légende</translation>
-    </message>
-    <message>
-        <location filename="ui_legendonly.ui" line="270"/>
-        <source>Automatic values if empty (max;max/3;max/9)</source>
-        <translation>Valeurs automatiques si non renseigné (max;max/3;max/9)</translation>
-    </message>
-    <message>
-        <location filename="ui_legendonly.ui" line="280"/>
-        <source>     (Example : 900;300;100)</source>
-        <translation>(Exemple : 900;300;100)</translation>
-    </message>
-    <message>
-        <location filename="ui_legendonly.ui" line="326"/>
-        <source>Output :</source>
-        <translation>Sortie :</translation>
-    </message>
-    <message>
-        <location filename="ui_legendonly.ui" line="355"/>
-        <source>Memory</source>
-        <translation>Couche mémoire</translation>
-    </message>
-    <message>
-        <location filename="ui_legendonly.ui" line="371"/>
-        <source>Shapefile</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="ui_legendonly.ui" line="398"/>
-        <source>...</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="ui_legendonly.ui" line="413"/>
+        <location filename="ui_proportionalcircles.py" line="408"/>
         <source>add the legend to the canvas</source>
-        <translation>Ajouter le fond au canevas</translation>
+        <translation>ajouter l&apos;échelle au canevas</translation>
     </message>
     <message>
-        <location filename="ui_legendonly.ui" line="471"/>
+        <location filename="ui_proportionalcircles.py" line="409"/>
+        <source>Analysis + legend</source>
+        <translation>Analyse + légende</translation>
+    </message>
+    <message>
+        <location filename="ui_proportionalcircles.py" line="410"/>
+        <source>Legend only</source>
+        <translation>Légende seule</translation>
+    </message>
+    <message>
+        <location filename="ui_legendonly.py" line="501"/>
         <source>Number of sectors</source>
         <translation>Nombre de secteurs</translation>
     </message>
