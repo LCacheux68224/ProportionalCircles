@@ -101,7 +101,7 @@ def ronds(inputLayer, analysisAttributes, scale, outputLayerName, extendedAnalys
                     radius = coeff * (absValue/math.pi) ** .5
                     center = element.geometry().centroid()           
                     outFeat = QgsFeature()
-                    precision = (8.0 + 8.0 * (radius / maximumRadius)**4)  
+                    precision = (5.0 + 10.0 * (radius / maximumRadius))  
 
                     if nbSector == 1:   # draw circles -> buffer
                         outFeat.setGeometry(center.buffer(radius,precision))
@@ -234,7 +234,7 @@ def legendeRonds(crsString, legendCoordinates, scale, legendLayerName, nbSector=
                 radius = coeff * (absValue/math.pi) ** .5
           
                 outFeat = QgsFeature()
-                precision = (8.0 + 8.0 * (radius / maximumRadius)**4)  
+                precision = (5.0 + 10.0 * (radius / maximumRadius))  
 
                 if nbSector < 3:
                     # aling circles / half circles to the bottom
