@@ -20,9 +20,9 @@ soit en cliquant sur l'icône
 Les paramètres à renseigner :
 * **Fond cartographique**-> Fond d'analyse (points ou vecteurs) ;
 * **Variables sélectionnées** -> La ou les Variable(s) à représenter. En cas de choix multiple l'analyse affichera des secteurs proportionnels d'angle fixe.;
-* **Fond de référence** -> Contour utilisé pour le calcul de l'échelle automatique ;<br><br>
-L'échelle automatique permet d'obtenir de manière à ce que l'aire des l'ensemble des ronds soit égale à 1/7 de la surface d'un contour de référence choisi par l'utilisateur.<br> <br>
-L'échelle personnalisée permet quant à elle de faire correspondre une valeur particulière à un rayon déterminé par l'utilisateur pour pouvoir faire plusieures analyses comparables, par exemple.
+* **Fond de référence** -> Contour utilisé pour le calcul de l'échelle automatique ;<br>
+**L'échelle automatique permet d'obtenir de manière à ce que l'aire des l'ensemble des ronds soit égale à 1/7 de la surface d'un contour de référence choisi par l'utilisateur.<br> 
+**L'échelle personnalisée permet quant à elle de faire correspondre une valeur particulière à un rayon déterminé par l'utilisateur pour pouvoir faire plusieures analyses comparables, par exemple.
 * **Rayon** -> Rayon maximum de l'échelle personnalisée (attention le rayon s'exprime en mètres);
 * **Valeur** -> Valeur maximum de l'échelle personnalisée ;<br>
 La valeur maximale ainsi que le rayon maximum apparaissent automatiquement dans la barre de message en fin d'analyse au cas où l'on voudrait refaire une analyse sur un autre territoire en utilisant la même échelle.<br><br>
