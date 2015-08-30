@@ -26,15 +26,15 @@ email=lionel.cacheux@gmx.fr
 
 # Uncomment the following line and add your changelog entries:
 changelog=
-1.2 - add the possibility to generate a legend without a previous analysis
-    - add simplified rose diagram
-changelog[fr]=
-1.2 - ajout d'un onglet 'légende seule'
-    - ajout des diagrammes en secteurs (rose diagram)    
+	1.2 - add the possibility to generate a legend without a previous analysis
+	- add simplified rose diagram
+changelog[FR]=
+	1.2 - ajout de l'onglet 'légende seule'
+	- ajout des diagrammes secteurs (rose diagram)   
     
 # tags are comma separated with spaces allowed
-tags=circles,buffer,legend,rose diagram
-tags[fr]=ronds,légende
+tags=circles,buffer,legend,roseDiagram
+
 
 homepage=https://github.com/LCacheux68224/ProportionalCircles
 tracker=https://github.com/LCacheux68224/ProportionalCircles/issues
