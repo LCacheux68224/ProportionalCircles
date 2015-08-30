@@ -6,7 +6,7 @@ L'analyse en symboles proportionnels est utilisée pour représenter des effecti
 L'extension présentée ici, permet de créer des analyses en ronds mais aussi en secteurs (demi-ronds, par exemple) ainsi qu'une légende. Il est également possible de générer une légende seule sans analyse au préalable.
 Les analyses et les légendes sont générées sous forme de fonds pouvant être enregistrés, permettant ainsi leur réutilisation avec n'importe quel logiciel de cartographie supportant le format shapefile. (analyse catégorisée/graduée, filtrage, déplacement d'entités notamment les ronds de la légende). <BR>   
 ##Exemple d'analyse en ronds : <br>Nombre de ménages des communes du Morbihan en 2009
-![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/ProportionalCircles1.png)<br>
+![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/ProportionalCircles1_b.png)<br>
 _Source : Insee, RP2009 au lieu de résidence_<br>
 _Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géographique des Communes IGN-RGC® 2012, contours de département et régions IGN-GEOFLA® 2012_
 ## Fichiers nécessaires :
@@ -22,7 +22,7 @@ Les paramètres à renseigner :
 * **Fond cartographique**-> Fond d'analyse (points ou vecteurs) ;
 * **Variables sélectionnées** -> La ou les Variable(s) à représenter.; 
 <p>En cas de choix multiple l'analyse créera un fond de secteurs proportionnels mais d'angle fixe.Avec deux variables on obtient une analyse en demi-ronds</p>
-![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/iconRonds.png)
+![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/demi-lunes.png)
 * **Fond de référence** -> Contour utilisé pour le calcul de l'échelle automatique ;
 <p>L'échelle automatique permet d'obtenir de manière à ce que l'aire des l'ensemble des ronds soit égale à 1/7 de la surface d'un contour de référence choisi par l'utilisateur.<br> 
 L'échelle personnalisée permet quant à elle de faire correspondre une valeur particulière à un rayon déterminé par l'utilisateur pour pouvoir faire plusieures analyses comparables, par exemple.</p>
@@ -30,7 +30,7 @@ L'échelle personnalisée permet quant à elle de faire correspondre une valeur 
 * **Valeur** -> Valeur maximum de l'échelle personnalisée ;<br>
 La valeur maximale ainsi que le rayon maximum apparaissent automatiquement dans la barre de message en fin d'analyse au cas où l'on voudrait refaire une analyse sur un autre territoire en utilisant la même échelle.<br><br>
 * **Valeurs à représenter…** -> Il est possible de définir ici une liste de valeurs que l'on souhaite voir apparaître dans la légende. Les valeurs sont à séparer par un point-virgule ou un espace. Si la case est laissée vide, trois valeurs seront automatiquement calculées (max, max/3, max/9)<br>
-![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/iconRonds.png)
+![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/CustomLegendValues.png)
 
 Il est possible également de restreindre l'annalyse en ne sélectionnant qu'une partie des entités du fond de carte.<br>
 ![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/ProportionalCircles2.png)<br>
@@ -46,7 +46,7 @@ _Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géog
  
 ### Création d'une légende seule
 Il est possible de créer une légende seule sans analyse préalable depuis l'onglet **Légende seule** de l'interface de d'extension. <br>
-![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/iconRonds.png)<br>
+![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/legendOnly.png)<br>
 Les paramètres à renseigner :
 * **Nombre de secteurs** -> Nombre de secteurs à représenter dans la légende. Choisir 1 pour une légende correspondant à une analyse en ronds. <br><br>
 les paramètres suivants sont les mêmes que pour une analyse complète :
