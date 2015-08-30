@@ -3,7 +3,7 @@
 
 ###_(Extension pour Qgis 2.0.1 et +)_
 L'analyse en symboles proportionnels est utilisée pour représenter des effectifs ou des évolutions en effectifs, par exemple la population de communes d'un pays ou d'une région.<br><br>
-L'extension présentée ici, permet de créer des analyses en ronds mais aussi en secteurs (demi-ronds, par exemple) ainsi qu'en légende associée. Il est également possible de générer une légende seule sans analyse au préalable.
+L'extension présentée ici, permet de créer des analyses en ronds mais aussi en secteurs (demi-ronds, par exemple) ainsi qu'une légende. Il est également possible de générer une légende seule sans analyse au préalable.
 Les analyses et les légendes sont générées sous forme de fonds pouvant être enregistrés, permettant ainsi leur réutilisation avec n'importe quel logiciel de cartographie supportant le format shapefile. (analyse catégorisée/graduée, filtrage, déplacement d'entités notamment les ronds de la légende). <BR>   
 ##Exemple d'analyse en ronds : <br>Nombre de ménages des communes du Morbihan en 2009
 ![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/ProportionalCircles1.png)<br>
@@ -43,3 +43,13 @@ _Fonds de cartes : Chefs-lieux de communes créé à partir du Répertoire Géog
 ### Les deux types de sorties proposées : 
 * Une sortie sous forme de deux cartes "mémoire" (analyse + légende). Ce type de sortie nécessite l'extension « **Memory Layer Saver** » pour que les fonds puisse être enregistrés en parallèle au projet dans un fichier _NomDuProjet.qgs.mldata_ ;
 * Une sortie sous forme de deux fonds Shapefile classiques (analyse + légende).
+ 
+### Création d'une légende seule
+Il est possible de créer une légende seule sans analyse préalable depuis l'onglet **Légende seule** de l'interface de d'extension. <br>
+![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/iconRonds.png)<br>
+Les paramètres à renseigner :
+* **Nombre de secteurs** -> Nombre de secteurs à représenter dans la légende. Choisir 1 pour une légende correspondant à une analyse en ronds. <br><br>
+les paramètres suivants sont les mêmes que pour une analyse complète :
+* **Rayon** -> Rayon maximum de l'échelle personnalisée (attention le rayon s'exprime en mètres);
+* **Valeur** -> Valeur maximum de l'échelle personnalisée ;<br>
+* **Valeurs à représenter…** -> Liste de valeurs que l'on souhaite voir apparaître dans la légende. Les valeurs sont à séparer par un point-virgule ou un espace. Si la case est laissée vide, trois valeurs seront automatiquement calculées (max, max/3, max/9)<br>
