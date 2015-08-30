@@ -1,9 +1,87 @@
 # -*- coding:utf-8 -*-
 
 from PyQt4.QtGui import *
-from PyQt4.QtCore import QVariant
+from PyQt4.QtCore import  QVariant
 from qgis.core import *
 import math
+
+def setTypoColor(layer, var = NULL):
+    if var is NULL :   # last column
+        fields = layer.pendingFields().toList()
+        idx = len(fields)-1
+    else :
+        idx = var
+    values = layer.uniqueValues(idx)
+    if len(values) >1 :  
+        values.sort()  
+        AccentColorList = ('#7fc97f' , '#beaed4' , '#fdc086' , '#ffff99' , '#386cb0' , '#f0027f' , '#bf5b17' , '#666666')  # ColorBrewer Accent
+        j = 0
+        categories = []
+        for i in values :
+            symbol = QgsFillSymbolV2.createSimple({'style': 'solid', 'color': AccentColorList[j % 8 +2 ], 'width_border':'0.1'})
+            category = QgsRendererCategoryV2(i,symbol,i)
+            categories.append(category)
+            j += 1
+        renderer = QgsCategorizedSymbolRendererV2(fields[-1].name(), categories)
+    else :
+        symbol = QgsSymbolV2.defaultSymbol(layer.geometryType())
+        renderer = QgsRuleBasedRendererV2(symbol)
+        positivSymbol = QgsFillSymbolV2.createSimple({'style': 'solid', 'color': '#fdb462', 'width_border':'0.1'})
+        negativSymbol = QgsFillSymbolV2.createSimple({'style': 'solid', 'color': '#80b1d3', 'width_border':'0.1'})
+
+        ruleList = [ (fields[-3].name() + ' >= 0', positivSymbol), (fields[-3].name() + ' < 0',negativSymbol)]
+        # get the "root" rule
+        root_rule = renderer.rootRule()
+
+        for expression, colorSymbol in ruleList :
+            rule = root_rule.children()[0].clone()  # create a clone (i.e. a copy) of the default rule
+            rule.setLabel(expression) 
+            rule.setFilterExpression(expression)
+            rule.setSymbol(colorSymbol)
+            root_rule.appendChild(rule)
+        root_rule.removeChildAt(0)
+
+    layer.setRendererV2(renderer)
+
+'''
+def setLegendTypoColor(layer, var = NULL):
+    if var is NULL :   # last column
+        fields = layer.pendingFields().toList()
+        idx = 2 # len(fields)-1
+    else :
+        idx = var
+    values = layer.uniqueValues( idx )
+    lightGrey = '#f5f5f5' 
+    if len(values) <1 :    
+
+        j = 0
+        categories = []
+        for i in values :
+            symbol = QgsFillSymbolV2.createSimple({'style': 'solid', 'color': lightGrey, 'width_border':'0.1'})
+            category = QgsRendererCategoryV2(str(i),symbol,str(i))
+            categories.append(category)
+            j += 1
+        renderer = QgsCategorizedSymbolRendererV2(fields[2].name(), categories)
+    else :
+        symbol = QgsSymbolV2.defaultSymbol(layer.geometryType())
+        renderer = QgsRuleBasedRendererV2(symbol)
+        firstSectorSymbol = QgsFillSymbolV2.createSimple({'style': 'solid', 'color': lightGrey, 'width_border':'0.1'})
+        otherSectorSymbol = (QgsFillSymbolV2.createSimple({'style': 'no', 'width_border':'0.1', 'style_border':'dash'}),QgsFillSymbolV2.createSimple({'style': 'no', 'width_border':'0.3', 'color_border':'green'}))
+
+        ruleList = [ (fields[2].name() + " in('1' , 'L')", firstSectorSymbol), (fields[2].name() + " != '1'",otherSectorSymbol)]
+        # get the "root" rule
+        root_rule = renderer.rootRule()
+
+        for expression, colorSymbol in ruleList :
+            rule = root_rule.children()[0].clone()  # create a clone (i.e. a copy) of the default rule
+            rule.setLabel(expression) 
+            rule.setFilterExpression(expression)
+            rule.setSymbol(colorSymbol)
+            root_rule.appendChild(rule)
+        root_rule.removeChildAt(0)
+
+    layer.setRendererV2(renderer)
+'''
     
 def drawSector(center, radius, startAngle, stopAngle, precision):
     sector = [QgsPoint(center)]
@@ -114,8 +192,8 @@ def ronds(inputLayer, analysisAttributes, scale, outputLayerName, extendedAnalys
                     originLine.extend([currentValue,radius])
 
                     # for sectors add also the name of the variable
-                    if nbSector > 1:
-                        originLine.append(field_names[col])
+                    # if nbSector > 1:
+                    originLine.append(str(sectorNr+1)+' - '+field_names[col])
                     outFeat.setAttributes(originLine)
                     tableau.append((radius, outFeat))
 
@@ -159,8 +237,8 @@ def ronds(inputLayer, analysisAttributes, scale, outputLayerName, extendedAnalys
         pr = resultLayer.dataProvider()
         newAttributeList.extend([QgsField(valueName, QVariant.Double, "Real", 10,3)])
         newAttributeList.extend([QgsField(radiusName, QVariant.Double, "Real", 10,1)])
-        if nbSector > 1:
-            newAttributeList.extend([QgsField(varName, QVariant.String, "String", 50)])
+        # if nbSector > 1:
+        newAttributeList.extend([QgsField(varName, QVariant.String, "String", 50)])
 
         pr.addAttributes(newAttributeList)
         resultLayer.updateFields()

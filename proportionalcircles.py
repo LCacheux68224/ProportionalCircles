@@ -216,11 +216,9 @@ class ProportionalCircles:
                     
                     # Output
                     if outputLayer :   # if resultLayer is Ok...
-                        if self.dlg.memoryOutput.isChecked():           # ...add memory layer to the canevas
-                            rendererV2 = outputLayer.rendererV2()
-                            # load and apply style to circles layer
-                            style_path = os.path.join( os.path.dirname(__file__), "ronds_style.qml" )
-                            (errorMsg, result) = outputLayer.loadNamedStyle( style_path )
+
+                        if self.dlg.memoryOutput.isChecked():           # ...add the memory layer to the canevas
+                            setTypoColor(outputLayer)   # customize style
                             QgsMapLayerRegistry.instance().addMapLayer(outputLayer)
 
                         else :                                              # ...or save as a shapefile
@@ -228,25 +226,18 @@ class ProportionalCircles:
                             shapefilename = self.dlg.circlesFileName.text()
                             error = QgsVectorFileWriter.writeAsVectorFormat(outputLayer, shapefilename, "CP1250", None, "ESRI Shapefile")
 
-
-
-
-
                             if self.dlg.addCanevas.isChecked():         # ...and add saved layer to the canevas
                                 layername = os.path.splitext(os.path.basename(str(shapefilename)))[0]
                                 loadedLayer = QgsVectorLayer(shapefilename, layername, "ogr")
+ 
                                 # # customize style
-                                rendererV2 = loadedLayer.rendererV2()
-                                # load and apply style to legend
-                                style_path = os.path.join( os.path.dirname(__file__), "ronds_style.qml" )
-                                (errorMsg, result) = loadedLayer.loadNamedStyle( style_path )
+                                setTypoColor(loadedLayer)
                                 QgsMapLayerRegistry.instance().addMapLayer(loadedLayer)  
                                                     
-
                         # show scale and amount of missing values in the message bar
                         text1 = QtGui.QApplication.translate("ProportionalCircles","Proportional circles", None, QtGui.QApplication.UnicodeUTF8)
                         text2 = QtGui.QApplication.translate("ProportionalCircles","Missing value(s) : %d ; Max value : %d ; Max radius :  %d", None, QtGui.QApplication.UnicodeUTF8)  
-                        iface.messageBar().pushMessage(text1, text2 %(missingValues, maximumValue, maximumRadius), level = QgsMessageBar.INFO, duration = 30)
+                        iface.messageBar().pushMessage(text1, text2 %(missingValues, maximumValue, maximumRadius), level = QgsMessageBar.INFO, duration = 15)
 
                         # lengend
 
@@ -262,9 +253,11 @@ class ProportionalCircles:
 
                         if self.dlg.memoryOutput.isChecked():           # ...add memory legend layer to the canevas
                             rendererV2 = legendLayer.rendererV2()
+
                             # load and apply style to circles layer
                             style_path = os.path.join( os.path.dirname(__file__), "legendeStyle.qml" )
                             (errorMsg, result) = legendLayer.loadNamedStyle( style_path )
+
                             QgsMapLayerRegistry.instance().addMapLayer(legendLayer)
 
                         else :                                              # ...or save as a shapefile
@@ -323,6 +316,8 @@ class ProportionalCircles:
                 # load and apply style to circles layer
                 style_path = os.path.join( os.path.dirname(__file__), "legendeStyle.qml" )
                 (errorMsg, result) = legendOnlyLayer.loadNamedStyle( style_path )
+                # setLegendTypoColor(legendOnlyLayer)
+
                 QgsMapLayerRegistry.instance().addMapLayer(legendOnlyLayer)
                 legendOnlyLayer.startEditing()
                 legendOnlyLayer.selectAll()
@@ -342,6 +337,9 @@ class ProportionalCircles:
                     QgsMapLayerRegistry.instance().addMapLayer(loadedLayer) 
                     loadedLayer.startEditing()
                     loadedLayer.selectAll()
-            del legendOnlyLayer        
+            del legendOnlyLayer   
+
+
+  
 
 
