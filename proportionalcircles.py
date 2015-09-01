@@ -20,7 +20,6 @@
  ***************************************************************************/
 
 """
-
 # Import the PyQt and QGIS libraries
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -31,28 +30,20 @@ import resources_rc
 from proportionalcirclesdialog import ProportionalCirclesDialog
 import os.path
 
-
-
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
 from qgis.gui import *
 from fonctionsCarto import *
-
 
 # Import the utilities from the fTools plugin (a standard QGIS plugin),
 # which provide convenience functions for handling QGIS vector layers
 import sys, os, imp
 import fTools
 
-import math
-
 # Used to print a informations in the message bar of the canvas 
 from PyQt4.QtGui import QProgressBar
-from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 
+import math
 
 class ProportionalCircles:
 
@@ -61,7 +52,7 @@ class ProportionalCircles:
         self.iface = iface
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
-        # initialize locale
+        # initialize locale for translation
         locale = QSettings().value("locale/userLocale")[0:2]
         localePath = os.path.join(self.plugin_dir, 'i18n', 'proportionalcircles_{}.qm'.format(locale))
 
@@ -77,18 +68,12 @@ class ProportionalCircles:
         # Create the dialog (after translation) and keep reference
         self.dlg = ProportionalCirclesDialog()
 
-
-
-
     def initGui(self):
-        #####################
-        # Analysis + Legend #
-        #####################
-        text = QtGui.QApplication.translate("Proportional circles","Proportional circles", None, QtGui.QApplication.UnicodeUTF8)
+        pluginName = QtGui.QApplication.translate("Proportional circles","Proportional circles", None, QtGui.QApplication.UnicodeUTF8)
         # Create action that will start plugin configuration
         self.action = QAction(
             QIcon(":/plugins/ProportionalCircles/iconRonds.png"), 
-            text, self.iface.mainWindow())
+            pluginName, self.iface.mainWindow())
 
         # connect the action to the run method
         self.action.triggered.connect(self.run)
@@ -99,66 +84,23 @@ class ProportionalCircles:
         else:
             self.iface.addToolBarIcon(self.action)
         if hasattr( self.iface, 'addPluginToVectorMenu' ):
-            self.iface.addPluginToVectorMenu( text, self.action )
+            self.iface.addPluginToVectorMenu( pluginName, self.action )
         else:
-            self.iface.addPluginToMenu(text, self.action)
-
-        ###############
-        # legend only #
-        ###############
-        '''
-        text2 = QtGui.QApplication.translate("Proportional circles","Legend only", None, QtGui.QApplication.UnicodeUTF8)
-        # Create action that will start plugin configuration
-        self.actionLegend = QAction(
-            QIcon(":/plugins/ProportionalCircles/iconLegendeRonds.png"), 
-            text2, self.iface.mainWindow())
-
-
-        # connect the action to the run method
-        # self.actionLegend.triggered.connect(self.runLegend)
-
-        # Add toolbar button and menu item
-        if hasattr( self.iface, 'addDatabaseToolBarIcon' ):
-            self.iface.addVectorToolBarIcon(self.actionLegend)
-        else:
-            self.iface.addToolBarIcon(self.actionLegend)
-        if hasattr( self.iface, 'addPluginToVectorMenu' ):
-            self.iface.addPluginToVectorMenu( text, self.actionLegend )
-        else:
-            self.iface.addPluginToMenu(text2, self.actionLegend)
-        '''
+            self.iface.addPluginToMenu(pluginName, self.action)
 
     def unload(self):
-        text = QtGui.QApplication.translate("ProportionalCircles","Proportional circles", None, QtGui.QApplication.UnicodeUTF8)
+        pluginName = QtGui.QApplication.translate("ProportionalCircles","Proportional circles", None, QtGui.QApplication.UnicodeUTF8)
 
         # Remove the plugin menu item and icon
 
         if hasattr( self.iface, 'removePluginVectorMenu' ):
-            self.iface.removePluginVectorMenu( text, self.action )
+            self.iface.removePluginVectorMenu( pluginName, self.action )
         else:
-            self.iface.removePluginMenu( text, self.action )
+            self.iface.removePluginMenu( pluginName, self.action )
         if hasattr( self.iface, 'removeVectorToolBarIcon' ):
             self.iface.removeVectorToolBarIcon(self.action)
         else:
             self.iface.removeToolBarIcon(self.action)
-
-
-        '''
-        text2 = QtGui.QApplication.translate("ProportionalCircles","Legend Only", None, QtGui.QApplication.UnicodeUTF8)
-
-        # Remove the plugin menu item and icon
-
-        if hasattr( self.iface, 'removePluginVectorMenu' ):
-            self.iface.removePluginVectorMenu( text, self.actionLegend )
-        else:
-            self.iface.removePluginMenu( text2, self.actionLegend )
-        if hasattr( self.iface, 'removeVectorToolBarIcon' ):
-            self.iface.removeVectorToolBarIcon(self.actionLegend)
-        else:
-
-            self.iface.removeToolBarIcon(self.actionLegend)
-        '''
-
 
     # run method that performs all the real work
     def run(self):
@@ -170,26 +112,19 @@ class ProportionalCircles:
         else :
             self.dlg.autoScale.setEnabled(True)
             self.dlg.autoScale.setChecked(True)            
-            
-            
         self.dlg.circlesFileName.clear()
         self.dlg.legendFileName.clear()
+
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
         result = self.dlg.exec_()
 
-        # See if OK was pressed
-        if result == 1 and self.dlg.legendOnly == False :
-
-            # if self.dlg.inputValue.currentText() == '':
-            if len(self.dlg.selectedAttributesList) < 1:
-                textError1 = QtGui.QApplication.translate("ProportionalCircles","Input error ", None, QtGui.QApplication.UnicodeUTF8)
-                textError2 = QtGui.QApplication.translate("ProportionalCircles"," No valid datas available in the attribute table", None, QtGui.QApplication.UnicodeUTF8)
-                iface.messageBar().pushMessage(textError1, textError2, level = QgsMessageBar.CRITICAL, duration = 5)  
-            else:
+        # See if OK was pressed 
+        if result == 1 :
+        
+            if self.dlg.legendOnly == False :  # Generates an analysis and a legend 
                 try :
-
                     # start waitCursor
                     QApplication.setOverrideCursor( QCursor( Qt.WaitCursor ) )  
 
@@ -210,6 +145,8 @@ class ProportionalCircles:
 
                     # proceed analysis
                     outputLayer, maximumValue, maximumRadius, missingValues, crsString = ronds(inputLayer, valueFieldNames, scale, resultNameLayer, extendedAnalysis)
+
+                    # fill MaxValue, MaxRadius and NbSector in lengend only GUI part
                     self.dlg.legendOnlyMaxCustomValue.setValue(maximumValue)
                     self.dlg.legendOnlyMaxCustomRadius.setValue(maximumRadius) 
                     self.dlg.legendOnlyNbSector.setValue(nbSector)
@@ -221,17 +158,15 @@ class ProportionalCircles:
                             setTypoColor(outputLayer)   # customize style
                             QgsMapLayerRegistry.instance().addMapLayer(outputLayer)
 
-                        else :                                              # ...or save as a shapefile
-
+                        else :                                          # ...or save as a shapefile
                             shapefilename = self.dlg.circlesFileName.text()
                             error = QgsVectorFileWriter.writeAsVectorFormat(outputLayer, shapefilename, "CP1250", None, "ESRI Shapefile")
 
                             if self.dlg.addCanevas.isChecked():         # ...and add saved layer to the canevas
-                                layername = os.path.splitext(os.path.basename(str(shapefilename)))[0]
+                                layername = os.path.splitext(os.path.basename(shapefilename))[0]
                                 loadedLayer = QgsVectorLayer(shapefilename, layername, "ogr")
- 
-                                # # customize style
-                                setTypoColor(loadedLayer)
+
+                                setTypoColor(loadedLayer)  # customize style
                                 QgsMapLayerRegistry.instance().addMapLayer(loadedLayer)  
                                                     
                         # show scale and amount of missing values in the message bar
@@ -241,20 +176,18 @@ class ProportionalCircles:
 
                         # lengend
 
-                        # coordinates of the legend
+                        # coordinates of the legend (at the right of the output layer)
                         coeff = maximumRadius * (math.pi/maximumValue)**.5
                         maxRadiusLegend = coeff * (maximumValue/math.pi) ** .5  
                         xLegend = outputLayer.extent().xMaximum() + maxRadiusLegend *2
                         yLegend = (outputLayer.extent().yMinimum() + outputLayer.extent().yMaximum())*.5    
-                        
-                        del outputLayer
+                        del outputLayer  # no more needed
                         
                         legendLayer = legendeRonds(crsString, (xLegend,yLegend), (maximumValue,maximumRadius), 'legende rond', nbSector, self.dlg.legendValuesList)
 
                         if self.dlg.memoryOutput.isChecked():           # ...add memory legend layer to the canevas
                             rendererV2 = legendLayer.rendererV2()
-
-                            # load and apply style to circles layer
+                            # load and apply a style to circles layer from a file
                             style_path = os.path.join( os.path.dirname(__file__), "legendeStyle.qml" )
                             (errorMsg, result) = legendLayer.loadNamedStyle( style_path )
 
@@ -265,79 +198,76 @@ class ProportionalCircles:
                             error = QgsVectorFileWriter.writeAsVectorFormat(legendLayer, legendFilename, "CP1250", None, "ESRI Shapefile")
 
                             if self.dlg.addCanevas.isChecked():         # ...and add saved layer to the canevas
-                                layername = os.path.splitext(os.path.basename(str(legendFilename)))[0]
+                                layername = os.path.splitext(os.path.basename(legendFilename))[0]
                                 loadedLayer = QgsVectorLayer(legendFilename, layername, "ogr")
                                 # # customize style
                                 rendererV2 = loadedLayer.rendererV2()
-                                # load and apply style to legend
+                                # load and apply a style to circles layer from a file
                                 style_path = os.path.join( os.path.dirname(__file__), "legendeStyle.qml" )
                                 (errorMsg, result) = loadedLayer.loadNamedStyle( style_path )
+                                
                                 QgsMapLayerRegistry.instance().addMapLayer(loadedLayer)    
                         del legendLayer
-
-                                # QgsMapLayerRegistry.instance().addMapLayer(legendLayer)
-
 
                     else :                  # Warning message if resultLayer is empty...
                         textError1 = QtGui.QApplication.translate("ProportionalCircles","Input error ", None, QtGui.QApplication.UnicodeUTF8)
                         textError2 = QtGui.QApplication.translate("ProportionalCircles","No valid datas available in the attribute table", None, QtGui.QApplication.UnicodeUTF8)
                         iface.messageBar().pushMessage(textError1, textError2 , level = QgsMessageBar.CRITICAL)
-
-                
+            
                 finally :
-
                     # stop waitCursor
-                 
                     QApplication.restoreOverrideCursor()
 
+            elif self.dlg.legendOnly :   # Generates only a legend 
 
-        elif result == 1 and self.dlg.legendOnly:
+                # use the CRS of the project
+                canvas = self.iface.mapCanvas()
+                mapRenderer = canvas.mapRenderer()
+                srs=mapRenderer.destinationCrs()
+                if 'EPSG' in srs.authid() :
+                    crsString = srs.authid()
+                else : 
+                    crsString = srs.toWkt()
 
-            # use the CRS of the project
-            canvas = self.iface.mapCanvas()
-            mapRenderer = canvas.mapRenderer()
-            srs=mapRenderer.destinationCrs()
-            if 'EPSG' in srs.authid() :
-                crsString = srs.authid()
-            else : 
-                crsString = srs.toWkt()
+                # Center the legend in the canevas    
+                canevasExtent = iface.mapCanvas().extent()
+                xLegend = (canevasExtent.xMaximum()+canevasExtent.xMinimum() )/2
+                yLegend = (canevasExtent.yMaximum()+canevasExtent.yMinimum() )/2
 
-            canevasExtent = iface.mapCanvas().extent()
-            xLegend = (canevasExtent.xMaximum()+canevasExtent.xMinimum() )/2
-            yLegend = (canevasExtent.yMaximum()+canevasExtent.yMinimum() )/2
+                scale = (self.dlg.legendOnlyMaxCustomValue.value(), self.dlg.legendOnlyMaxCustomRadius.value())
+                nbSector = self.dlg.legendOnlyNbSector.value()
 
-            scale = (self.dlg.legendOnlyMaxCustomValue.value(), self.dlg.legendOnlyMaxCustomRadius.value())
-            nbSector = self.dlg.legendOnlyNbSector.value()
+                legendOnlyLayer = legendeRonds(crsString, (xLegend,yLegend), scale, 'legende rond', nbSector, self.dlg.legendOnlyValuesList)
 
-            legendOnlyLayer = legendeRonds(crsString, (xLegend,yLegend), scale, 'legende rond', nbSector, self.dlg.legendOnlyValuesList)
-
-            if self.dlg.legendOnlyMemoryOutput.isChecked():           # ...add memory legend layer to the canevas
-                rendererV2 = legendOnlyLayer.rendererV2()
-                # load and apply style to circles layer
-                style_path = os.path.join( os.path.dirname(__file__), "legendeStyle.qml" )
-                (errorMsg, result) = legendOnlyLayer.loadNamedStyle( style_path )
-                # setLegendTypoColor(legendOnlyLayer)
-
-                QgsMapLayerRegistry.instance().addMapLayer(legendOnlyLayer)
-                legendOnlyLayer.startEditing()
-                legendOnlyLayer.selectAll()
-
-            else :                                              # ...or save as a shapefile
-                legendOnlyFilename = self.dlg.legendOnlyFileName.text()
-                error = QgsVectorFileWriter.writeAsVectorFormat(legendOnlyLayer, legendOnlyFilename, "CP1250", None, "ESRI Shapefile")
-
-                if self.dlg.legendOnlyAddCanevas.isChecked():         # ...and add saved layer to the canevas
-                    layername = os.path.splitext(os.path.basename(str(legendOnlyFilename)))[0]
-                    loadedLayer = QgsVectorLayer(legendOnlyFilename, layername, "ogr")
-                    # # customize style
-                    rendererV2 = loadedLayer.rendererV2()
-                    # load and apply style to legend
+                if self.dlg.legendOnlyMemoryOutput.isChecked():           # ...add memory legend layer to the canevas
+                    # customize style
+                    rendererV2 = legendOnlyLayer.rendererV2()
+                    # load and apply style to circles layer
                     style_path = os.path.join( os.path.dirname(__file__), "legendeStyle.qml" )
-                    (errorMsg, result) = loadedLayer.loadNamedStyle( style_path )
-                    QgsMapLayerRegistry.instance().addMapLayer(loadedLayer) 
-                    loadedLayer.startEditing()
-                    loadedLayer.selectAll()
-            del legendOnlyLayer   
+                    (errorMsg, result) = legendOnlyLayer.loadNamedStyle( style_path )
+
+                    QgsMapLayerRegistry.instance().addMapLayer(legendOnlyLayer)
+                    # Editing mode in order to move the legend easy
+                    legendOnlyLayer.startEditing()
+                    legendOnlyLayer.selectAll()
+
+                else :                                              # ...or save as a shapefile
+                    legendOnlyFilename = self.dlg.legendOnlyFileName.text()
+                    error = QgsVectorFileWriter.writeAsVectorFormat(legendOnlyLayer, legendOnlyFilename, "CP1250", None, "ESRI Shapefile")
+
+                    if self.dlg.legendOnlyAddCanevas.isChecked():         # ...and add saved layer to the canevas
+                        layername = os.path.splitext(os.path.basename(legendOnlyFilename))[0]
+                        loadedLayer = QgsVectorLayer(legendOnlyFilename, layername, "ogr")
+                        # customize style
+                        rendererV2 = loadedLayer.rendererV2()
+                        # load and apply style to legend
+                        style_path = os.path.join( os.path.dirname(__file__), "legendeStyle.qml" )
+                        (errorMsg, result) = loadedLayer.loadNamedStyle( style_path )
+                        QgsMapLayerRegistry.instance().addMapLayer(loadedLayer) 
+                        # Editing mode in order to move the legend easy
+                        loadedLayer.startEditing()
+                        loadedLayer.selectAll()
+                del legendOnlyLayer   
 
 
   
