@@ -1,5 +1,4 @@
- Analyse en ronds/secteurs proportionnels<br>avec échelle et légende automatique 
- ![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/iconRonds.png)
+ Analyse en ronds/secteurs proportionnels<br>avec échelle et légende automatique ![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/iconRonds.png)
 ===================
 (Version 1.2.1) 
 ###_(Extension pour Qgis 2.0.1 et +)_
