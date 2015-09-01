@@ -45,6 +45,9 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
 
+
+
+
         self.selectedAttributesList = []
         self.setupUi(self)
         self.autoScale.toggled.connect(self.radio_scale)
@@ -178,13 +181,13 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
 
         fileName0 = QtGui.QFileDialog.getSaveFileName(self, 'Save as',
                                         self.oldPath, "Shapefile (*.shp);;All files (*)")
-        fileName = os.path.splitext(str(fileName0))[0]+'.shp'
-        if os.path.splitext(str(fileName0))[0] != '':
+        fileName = os.path.splitext(fileName0)[0]+ u'.shp'
+        if os.path.splitext(fileName0)[0] != '':
             self.oldPath = os.path.dirname(fileName)
         legendSuffix = QtGui.QApplication.translate("ProportionalCircles","_legend.shp", None, QtGui.QApplication.UnicodeUTF8)
-        legendeFileName = os.path.splitext(str(fileName0))[0]+legendSuffix
-        layername = os.path.splitext(os.path.basename(str(fileName)))[0]
-        legendeLayerName = os.path.splitext(os.path.basename(str(legendeFileName)))[0]
+        legendeFileName = os.path.splitext(fileName0)[0]+legendSuffix
+        layername = os.path.splitext(os.path.basename(fileName))[0]
+        legendeLayerName = os.path.splitext(os.path.basename(legendeFileName))[0]
         if (layername=='.shp'):
             return
         self.circlesFileName.setText(fileName)
@@ -194,11 +197,12 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
 
         fileName0 = QtGui.QFileDialog.getSaveFileName(self, 'Save as',
                                         self.oldPath, "Shapefile (*.shp);;All files (*)")
-        legendOnlyFileName = os.path.splitext(str(fileName0))[0]+'.shp'
-        if os.path.splitext(str(fileName0))[0] != '':
+                                     
+        legendOnlyFileName = os.path.splitext(fileName0)[0]+ u'.shp' # QtGui.QApplication.translate("ProportionalCircles",".shp", None, QtGui.QApplication.UnicodeUTF8)  #'.shp'
+        if os.path.splitext(fileName0)[0] != '':
             self.oldPath = os.path.dirname(legendOnlyFileName)
         # legendOnlyFileName = os.path.splitext(str(fileName0))[0]
-        legendOnlyLayername = os.path.splitext(os.path.basename(str(legendOnlyFileName)))[0]
+        legendOnlyLayername = os.path.splitext(os.path.basename(legendOnlyFileName))[0]
         if (legendOnlyLayername=='.shp'):
             return
         self.legendOnlyFileName.setText(legendOnlyFileName)
@@ -241,12 +245,18 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
                 QtGui.QApplication.translate("ProportionalCircles", \
                 "Error in custom values for legend", None, QtGui.QApplication.UnicodeUTF8)) 
 
+                 
+        elif ftu.getMapLayerByName(self.analysisLayer.currentText()).featureCount() == 0 and self.autoScale.isChecked() :
+            QtGui.QMessageBox.warning(self, "ProportionalCircles", \
+                QtGui.QApplication.translate("ProportionalCircles", \
+                "Empty polygon layer", None, QtGui.QApplication.UnicodeUTF8)) 
+
 	else :
             self.legendOnly = False
             self.accept()
 
-
     def legendOnlyTestSelectedOptions( self ):
+
 
         # list of custom radiuses for the circles in the legend
         legendOnlyCustomValues = self.legendOnlyCustomValues.text()

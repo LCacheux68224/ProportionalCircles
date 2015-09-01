@@ -5,25 +5,23 @@ from PyQt4.QtCore import  QVariant
 from qgis.core import *
 import math
 
-def setTypoColor(layer, var = NULL):
-    if var is NULL :   # last column
-        fields = layer.pendingFields().toList()
-        idx = len(fields)-1
-    else :
-        idx = var
+def setTypoColor(layer) : 
+    fields = layer.pendingFields().toList()
+    idx = len(fields)-1
     values = layer.uniqueValues(idx)
-    if len(values) >1 :  
+    if len(values) >1 :  # sectors
         values.sort()  
         AccentColorList = ('#7fc97f' , '#beaed4' , '#fdc086' , '#ffff99' , '#386cb0' , '#f0027f' , '#bf5b17' , '#666666')  # ColorBrewer Accent
         j = 0
         categories = []
-        for i in values :
+        for attributeName in values :
             symbol = QgsFillSymbolV2.createSimple({'style': 'solid', 'color': AccentColorList[j % 8 +2 ], 'width_border':'0.1'})
-            category = QgsRendererCategoryV2(i,symbol,i)
+            category = QgsRendererCategoryV2(attributeName,symbol,attributeName)
             categories.append(category)
             j += 1
         renderer = QgsCategorizedSymbolRendererV2(fields[-1].name(), categories)
-    else :
+
+    else :               # circles
         symbol = QgsSymbolV2.defaultSymbol(layer.geometryType())
         renderer = QgsRuleBasedRendererV2(symbol)
         positivSymbol = QgsFillSymbolV2.createSimple({'style': 'solid', 'color': '#fdb462', 'width_border':'0.1'})
@@ -42,46 +40,6 @@ def setTypoColor(layer, var = NULL):
         root_rule.removeChildAt(0)
 
     layer.setRendererV2(renderer)
-
-'''
-def setLegendTypoColor(layer, var = NULL):
-    if var is NULL :   # last column
-        fields = layer.pendingFields().toList()
-        idx = 2 # len(fields)-1
-    else :
-        idx = var
-    values = layer.uniqueValues( idx )
-    lightGrey = '#f5f5f5' 
-    if len(values) <1 :    
-
-        j = 0
-        categories = []
-        for i in values :
-            symbol = QgsFillSymbolV2.createSimple({'style': 'solid', 'color': lightGrey, 'width_border':'0.1'})
-            category = QgsRendererCategoryV2(str(i),symbol,str(i))
-            categories.append(category)
-            j += 1
-        renderer = QgsCategorizedSymbolRendererV2(fields[2].name(), categories)
-    else :
-        symbol = QgsSymbolV2.defaultSymbol(layer.geometryType())
-        renderer = QgsRuleBasedRendererV2(symbol)
-        firstSectorSymbol = QgsFillSymbolV2.createSimple({'style': 'solid', 'color': lightGrey, 'width_border':'0.1'})
-        otherSectorSymbol = (QgsFillSymbolV2.createSimple({'style': 'no', 'width_border':'0.1', 'style_border':'dash'}),QgsFillSymbolV2.createSimple({'style': 'no', 'width_border':'0.3', 'color_border':'green'}))
-
-        ruleList = [ (fields[2].name() + " in('1' , 'L')", firstSectorSymbol), (fields[2].name() + " != '1'",otherSectorSymbol)]
-        # get the "root" rule
-        root_rule = renderer.rootRule()
-
-        for expression, colorSymbol in ruleList :
-            rule = root_rule.children()[0].clone()  # create a clone (i.e. a copy) of the default rule
-            rule.setLabel(expression) 
-            rule.setFilterExpression(expression)
-            rule.setSymbol(colorSymbol)
-            root_rule.appendChild(rule)
-        root_rule.removeChildAt(0)
-
-    layer.setRendererV2(renderer)
-'''
     
 def drawSector(center, radius, startAngle, stopAngle, precision):
     sector = [QgsPoint(center)]
@@ -157,7 +115,7 @@ def ronds(inputLayer, analysisAttributes, scale, outputLayerName, extendedAnalys
         missingValues = 0
         sectorNr = 0        
         
-        # create a temporary table tableau = [radius, outfeat]
+        # create a temporary table : tableau = [radius, outfeat]
         tableau =[]
 
         field_names = [field.name() for field in inputLayer.pendingFields() ]
@@ -278,13 +236,14 @@ def legendeRonds(crsString, legendCoordinates, scale, legendLayerName, nbSector=
     # create a new layer for the legend
 
     resultLayer = QgsVectorLayer('Polygon?crs='+crsString, legendLayerName,'memory')
-    # resultLayer.startEditing()
+
     pr = resultLayer.dataProvider()
     newAttributeList = []
     valueName, radiusName, varName = u'VAL', u'R', u'SECT'
     newAttributeList.extend([QgsField(valueName, QVariant.Double, "Real", 10,3)])
     newAttributeList.extend([QgsField(radiusName, QVariant.Double, "Real", 10,1)])
     newAttributeList.extend([QgsField(varName, QVariant.String, "String", 10)])
+    
     # X, Y ALPHA attributes for the position of the labels
     newAttributeList.extend([QgsField('X', QVariant.Double, "Real", 10,3)])
     newAttributeList.extend([QgsField('Y', QVariant.Double, "Real", 10,3)])
@@ -301,7 +260,7 @@ def legendeRonds(crsString, legendCoordinates, scale, legendLayerName, nbSector=
 
     for i in range(nbSector):
         for element in listValues :
-            sectorNr = 1+i
+            sectorNr = 1 + i
             startAngle = sectorAngle * i
             stopAngle = startAngle + sectorAngle
             currentValue = element
@@ -341,7 +300,7 @@ def legendeRonds(crsString, legendCoordinates, scale, legendLayerName, nbSector=
                 # fill attribute table
                 if sectorNr == 1:
                     # fill the coordinates of the labels
-                    labelPosition = str((1.7*round(maximumRadius))-(centroidFeature[0]-x))+','+str(-1.0*round(radius)+(centroidFeature[1]-y))
+                    labelPosition = str((2*round(maximumRadius))-(centroidFeature[0]-x))+','+str(-1.0*round(radius)+(centroidFeature[1]-y))
                     outFeat.setAttributes([element,radius, sectorNr,NULL,NULL,NULL,labelPosition])
                 else:
                     outFeat.setAttributes([element,radius, sectorNr,NULL,NULL,NULL,NULL])
