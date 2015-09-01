@@ -1,6 +1,7 @@
- Analyse en ronds/secteurs proportionnels<br>avec échelle et légende automatique (Version 1.2.1) ![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/iconRonds.png)
+ Analyse en ronds/secteurs proportionnels<br>avec échelle et légende automatique 
+ ![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/iconRonds.png)
 ===================
-
+(Version 1.2.1) 
 ###_(Extension pour Qgis 2.0.1 et +)_
 L'analyse en symboles proportionnels est utilisée pour représenter des effectifs ou des évolutions en effectifs, par exemple la population de communes d'un pays ou d'une région.<br><br>
 L'extension présentée ici, permet de créer des analyses en ronds mais aussi en secteurs (demi-ronds, par exemple) ainsi qu'une légende. Il est également possible de générer une légende seule sans analyse au préalable.
