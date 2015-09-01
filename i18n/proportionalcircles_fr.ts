@@ -67,6 +67,11 @@
         <translation>La saisie des valeurs personnalisées de la légende est incorrecte</translation>
     </message>
     <message>
+        <location filename="proportionalcirclesdialog.py" line="196"/>
+        <source>Empty polygon layer</source>
+        <translation>Couche de référence vide</translation>
+    </message>
+    <message>
         <location filename="ui_proportionalcircles.py" line="385"/>
         <source>Proportional to the area of a reference polygon-layer</source>
         <translation>Proportionnel à la surface d&apos;un fond cartographique 
