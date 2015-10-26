@@ -16,7 +16,7 @@ description=Generates a layer of proportional circles and a legend. If more than
 description[fr]=Permet de créer un fond de ronds proportionnels ainsi qu’une légende. Lorsque plusieurs variables sont sélectionnées l’analyse en ronds se transforme en analyse en secteurs d’angle fixe de type "rose diagram". Il est également possible de générer simplement une légende. Nécessite  Memory layer Saver pour sauvegarder les couches d'analyse avec le projet.
 about=The area of each circle/sector are proportional to a value of the attribute table of a points or polygons layer. The scale can either be fixed by the user or calculated automatically. In case of an automatic scale, the total of the areas of the circles will be equal to 1/7 of the area of a reference polygons layer chosen by the user. The legend of the circles contains automaticaly three circles (corresponding to max value, max value / 3 and max value / 9), but it is also possible to chose a list of custom values to represent.
 about[fr]=La surface de chaque cercle/secteur est calculée pour être proportionnelle à une variable de la table d'attributs d'un fond de points ou de polygones. L'échelle est soit fixée par l'utilisateur, soit calculée automatiquement. Dans le cas de l'échelle automatique, la somme des aires des cercles sera égale à 1/7 de la surface d'un fond de polygones de référence choisi par l'utilisateur. La légende des cercles représente automatiquement les valeurs max, max/3 et max/9 de manière automatique, mais il est également possible de définir une liste de valeurs à représenter.
-version=1.2.1
+version=1.2.2
 author=Lionel Cacheux
 email=lionel.cacheux@gmx.fr
 
