@@ -9,17 +9,17 @@ def setTypoColor(layer) :
     fields = layer.pendingFields().toList()
     idx = len(fields)-1
     values = layer.uniqueValues(idx)
-    if len(values) >1 :  # sectors
-        values.sort()  
-        AccentColorList = ('#7fc97f' , '#beaed4' , '#fdc086' , '#ffff99' , '#386cb0' , '#f0027f' , '#bf5b17' , '#666666')  # ColorBrewer Accent
-        j = 0
-        categories = []
-        for attributeName in values :
-            symbol = QgsFillSymbolV2.createSimple({'style': 'solid', 'color': AccentColorList[j % 8 +2 ], 'width_border':'0.1'})
-            category = QgsRendererCategoryV2(attributeName,symbol,attributeName)
-            categories.append(category)
-            j += 1
-        renderer = QgsCategorizedSymbolRendererV2(fields[-1].name(), categories)
+    values.sort() 
+    AccentColorList = ( '#7fc97f','#ffff99' ,  '#fdc086',  '#beaed4', '#386cb0' , '#f0027f' , '#bf5b17' , '#666666')  # ColorBrewer Accent reorganised
+    j = 0
+    categories = []
+    for attributeName in values :
+        symbol = QgsFillSymbolV2.createSimple({'style': 'solid', 'color': AccentColorList[j % 8 +2 ], 'width_border':'0.1'})
+        category = QgsRendererCategoryV2(attributeName,symbol,attributeName)
+        categories.append(category)
+        j += 1
+    renderer = QgsCategorizedSymbolRendererV2(fields[-1].name(), categories)
+    '''
 
     else :               # circles
         symbol = QgsSymbolV2.defaultSymbol(layer.geometryType())
@@ -38,6 +38,7 @@ def setTypoColor(layer) :
             rule.setSymbol(colorSymbol)
             root_rule.appendChild(rule)
         root_rule.removeChildAt(0)
+    '''
 
     layer.setRendererV2(renderer)
     
@@ -150,8 +151,17 @@ def ronds(inputLayer, analysisAttributes, scale, outputLayerName, extendedAnalys
                     originLine.extend([currentValue,radius])
 
                     # for sectors add also the name of the variable
-                    # if nbSector > 1:
-                    originLine.append(str(sectorNr+1)+' - '+field_names[col])
+                    if nbSector == 1 :
+                        if currentValue < 0:
+                            sign = ' < 0' 
+                            texte = '2 - '
+                        else :
+                            sign = ' >= 0'
+                            texte = '1 - '
+                    else :
+                        sign = ''
+                        texte = str(sectorNr + 1) + ' - '
+                    originLine.append(texte + field_names[col] + sign)
                     outFeat.setAttributes(originLine)
                     tableau.append((radius, outFeat))
 
@@ -201,8 +211,13 @@ def ronds(inputLayer, analysisAttributes, scale, outputLayerName, extendedAnalys
         pr.addAttributes(newAttributeList)
         resultLayer.updateFields()
         pr.addFeatures( listElements )
-        # resultLayer.commitChanges()
-        resultLayer.updateExtents()
+        
+        resultLayer.selectAll()  # 2.2
+        resultLayer.setExtent(resultLayer.boundingBoxOfSelected()) #2.2
+        resultLayer.setSelectedFeatures([]) #2.2
+        
+        resultLayer.commitChanges()
+        # resultLayer.updateExtents()
 
         return resultLayer, maximumValue, maximumRadius, missingValues, crsString
     else :
@@ -328,7 +343,9 @@ def legendeRonds(crsString, legendCoordinates, scale, legendLayerName, nbSector=
         listGeom.append(outFeat2)
     
     pr.addFeatures( listGeom )
-    resultLayer.updateExtents()
+    resultLayer.selectAll()
+    resultLayer.setExtent(resultLayer.boundingBoxOfSelected())
+    # resultLayer.updateExtents()
 
     return resultLayer
         
