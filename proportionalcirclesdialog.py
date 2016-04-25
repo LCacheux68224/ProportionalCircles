@@ -24,12 +24,7 @@ from PyQt4 import QtCore, QtGui
 import qgis.core as qgis
 from ui_proportionalcircles import Ui_ProportionalCircles
 
-# Import the utilities from the fTools plugin (a standard QGIS plugin),
-# which provide convenience functions for handling QGIS vector layers
 import sys, os, imp
-import fTools
-path = os.path.dirname(fTools.__file__)
-ftu = imp.load_source('ftools_utils', os.path.join(path,'tools','ftools_utils.py'))
 
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
@@ -142,8 +137,8 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
 	self.analysisLayer.clear()  #ExtentLayer
         myListFonds = []
         myListContours = []
-        myListFonds = ftu.getLayerNames( [ qgis.QGis.Polygon, qgis.QGis.Point ] )
-        myListContours = ftu.getLayerNames( [ qgis.QGis.Polygon ] )
+        myListContours = [layer.name() for layer in qgis.QgsMapLayerRegistry.instance().mapLayers().values() if layer.geometryType() == qgis.QGis.Polygon ]
+        myListFonds = [layer.name() for layer in qgis.QgsMapLayerRegistry.instance().mapLayers().values() if layer.geometryType() in (qgis.QGis.Point, qgis.QGis.Polygon)]
         self.inputLayer.addItems( myListFonds )
         self.analysisLayer.addItems( myListContours )
 
@@ -245,13 +240,13 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
                 QtGui.QApplication.translate("ProportionalCircles", \
                 "Error in custom values for legend", None, QtGui.QApplication.UnicodeUTF8)) 
 
-                 
-        elif ftu.getMapLayerByName(self.analysisLayer.currentText()).featureCount() == 0 and self.autoScale.isChecked() :
+
+        elif qgis.QgsMapLayerRegistry.instance().mapLayersByName(self.analysisLayer.currentText())[0].featureCount() == 0 and self.autoScale.isChecked() :
             QtGui.QMessageBox.warning(self, "ProportionalCircles", \
-                QtGui.QApplication.translate("ProportionalCircles", \
+            QtGui.QApplication.translate("ProportionalCircles", \
                 "Empty polygon layer", None, QtGui.QApplication.UnicodeUTF8)) 
 
-	else :
+        else :
             self.legendOnly = False
             self.accept()
 

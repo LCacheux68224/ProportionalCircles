@@ -34,10 +34,7 @@ from PyQt4 import QtCore, QtGui
 from qgis.gui import *
 from fonctionsCarto import *
 
-# Import the utilities from the fTools plugin (a standard QGIS plugin),
-# which provide convenience functions for handling QGIS vector layers
 import sys, os, imp
-import fTools
 
 # Used to print a informations in the message bar of the canvas 
 from PyQt4.QtGui import QProgressBar
@@ -62,8 +59,6 @@ class ProportionalCircles:
 
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
-        path = os.path.dirname(fTools.__file__)
-        self.ftu = imp.load_source('ftools_utils', os.path.join(path,'tools','ftools_utils.py'))
 
         # Create the dialog (after translation) and keep reference
         self.dlg = ProportionalCirclesDialog()
@@ -129,17 +124,17 @@ class ProportionalCircles:
                     QApplication.setOverrideCursor( QCursor( Qt.WaitCursor ) )  
 
                     # recover the options from the plugin gui
-                    inputLayer = self.ftu.getMapLayerByName(self.dlg.inputLayer.currentText())
-                            
+                    inputLayer = QgsMapLayerRegistry.instance().mapLayersByName(self.dlg.inputLayer.currentText())[0]
+                    
                     resultNameLayer = QtGui.QApplication.translate("ProportionalCircles","Proportional_Circles_", None, QtGui.QApplication.UnicodeUTF8)+inputLayer.name()
                     valueFieldNames = self.dlg.selectedAttributesList
                     nbSector = len(valueFieldNames)
                     extendedAnalysis = self.dlg.selectedFeatures.isChecked()
 
                     # Scale of the circles / sectors
-                    if self.dlg.autoScale.isChecked():        # automatic scale : total of the areas of the circles = 1/7 area of the analysis area
-                        scale = self.ftu.getMapLayerByName(self.dlg.analysisLayer.currentText())
-
+                    if self.dlg.autoScale.isChecked():        # automatic scale : total of the areas of the circles = 1/7 area of the analysis area                       
+                        scale = QgsMapLayerRegistry.instance().mapLayersByName(self.dlg.analysisLayer.currentText())[0]
+                        
                     else :                                      # custom scale
                         scale = ( self.dlg.maxCustomValue.value(), self.dlg.maxCustomRadius.value() )
 
