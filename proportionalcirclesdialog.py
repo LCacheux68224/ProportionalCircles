@@ -241,7 +241,8 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
                 "Error in custom values for legend", None, QtGui.QApplication.UnicodeUTF8)) 
 
 
-        elif qgis.QgsMapLayerRegistry.instance().mapLayersByName(self.analysisLayer.currentText())[0].featureCount() == 0 and self.autoScale.isChecked() :
+            #elif qgis.QgsMapLayerRegistry.instance().mapLayersByName(self.analysisLayer.currentText())[0].featureCount() == 0 and self.autoScale.isChecked() :
+        elif qgis.QgsMapLayerRegistry.instance().mapLayersByName(self.analysisLayer.currentText()) is None and self.autoScale.isChecked() :
             QtGui.QMessageBox.warning(self, "ProportionalCircles", \
             QtGui.QApplication.translate("ProportionalCircles", \
                 "Empty polygon layer", None, QtGui.QApplication.UnicodeUTF8)) 

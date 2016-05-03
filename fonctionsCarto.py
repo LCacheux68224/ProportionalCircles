@@ -14,31 +14,11 @@ def setTypoColor(layer) :
     j = 0
     categories = []
     for attributeName in values :
-        symbol = QgsFillSymbolV2.createSimple({'style': 'solid', 'color': AccentColorList[j % 8 +2 ], 'width_border':'0.1'})
+        symbol = QgsFillSymbolV2.createSimple({'style': 'solid', 'color': AccentColorList[(j+2) % 8 ], 'width_border':'0.1'})
         category = QgsRendererCategoryV2(attributeName,symbol,attributeName)
         categories.append(category)
         j += 1
     renderer = QgsCategorizedSymbolRendererV2(fields[-1].name(), categories)
-    '''
-
-    else :               # circles
-        symbol = QgsSymbolV2.defaultSymbol(layer.geometryType())
-        renderer = QgsRuleBasedRendererV2(symbol)
-        positivSymbol = QgsFillSymbolV2.createSimple({'style': 'solid', 'color': '#fdb462', 'width_border':'0.1'})
-        negativSymbol = QgsFillSymbolV2.createSimple({'style': 'solid', 'color': '#80b1d3', 'width_border':'0.1'})
-
-        ruleList = [ (fields[-3].name() + ' >= 0', positivSymbol), (fields[-3].name() + ' < 0',negativSymbol)]
-        # get the "root" rule
-        root_rule = renderer.rootRule()
-
-        for expression, colorSymbol in ruleList :
-            rule = root_rule.children()[0].clone()  # create a clone (i.e. a copy) of the default rule
-            rule.setLabel(expression) 
-            rule.setFilterExpression(expression)
-            rule.setSymbol(colorSymbol)
-            root_rule.appendChild(rule)
-        root_rule.removeChildAt(0)
-    '''
 
     layer.setRendererV2(renderer)
     
@@ -77,6 +57,7 @@ def ronds(inputLayer, analysisAttributes, scale, outputLayerName, extendedAnalys
                     for element in analysisAttributes]
                     
     nbSector = len(analysisAttributes)
+    zfillValue = nbSector // 10 + 1
     sectorAngle = 2.0 * math.pi / nbSector
 
     # convert the values to absolute values
@@ -160,7 +141,7 @@ def ronds(inputLayer, analysisAttributes, scale, outputLayerName, extendedAnalys
                             texte = '1 - '
                     else :
                         sign = ''
-                        texte = str(sectorNr + 1) + ' - '
+                        texte = str(sectorNr + 1).zfill(zfillValue) + ' - '
                     originLine.append(texte + field_names[col] + sign)
                     outFeat.setAttributes(originLine)
                     tableau.append((radius, outFeat))
