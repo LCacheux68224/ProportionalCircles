@@ -137,8 +137,18 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
 	self.analysisLayer.clear()  #ExtentLayer
         myListFonds = []
         myListContours = []
-        myListContours = [layer.name() for layer in qgis.QgsMapLayerRegistry.instance().mapLayers().values() if layer.geometryType() == qgis.QGis.Polygon ]
-        myListFonds = [layer.name() for layer in qgis.QgsMapLayerRegistry.instance().mapLayers().values() if layer.geometryType() in (qgis.QGis.Point, qgis.QGis.Polygon)]
+        for elem in qgis.QgsMapLayerRegistry.instance().mapLayers().values():
+            if isinstance(elem, qgis.QgsVectorLayer) :
+                if elem.geometryType() == qgis.QGis.Polygon:
+                    myListContours.append(elem.name())
+        # myListContours = [layer.name() for layer in qgis.QgsMapLayerRegistry.instance().mapLayers().values() if layer.geometryType() == qgis.QGis.Polygon ]
+
+        for elem in qgis.QgsMapLayerRegistry.instance().mapLayers().values():
+            if isinstance(elem, qgis.QgsVectorLayer) :
+                if elem.geometryType() in (qgis.QGis.Point, qgis.QGis.Polygon):
+                    myListFonds.append(elem.name())
+        # myListFonds = [layer.name() for layer in qgis.QgsMapLayerRegistry.instance().mapLayers().values() if layer.geometryType() in (qgis.QGis.Point, qgis.QGis.Polygon)]
+
         self.inputLayer.addItems( myListFonds )
         self.analysisLayer.addItems( myListContours )
 
