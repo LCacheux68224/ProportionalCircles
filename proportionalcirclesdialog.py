@@ -164,7 +164,7 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
             layer = qgis.QgsMapLayerRegistry.instance().mapLayersByName(layerName)[0]
             fieldList = [field.name()
                for field in list(layer.pendingFields().toList())
-               if field.type() in (QtCore.QVariant.Double, QtCore.QVariant.Int)]
+               if field.type() in (QtCore.QVariant.Double, QtCore.QVariant.Int, QtCore.QVariant.UInt, QtCore.QVariant.LongLong, QtCore.QVariant.ULongLong)]
             # print fieldList
             self.availableAttributes.addItems(fieldList)
 
@@ -178,7 +178,7 @@ class ProportionalCirclesDialog(QtGui.QDialog, Ui_ProportionalCircles):
             layer = qgis.QgsMapLayerRegistry.instance().mapLayersByName(layerName)[0]
             fieldList = [field.name()
                for field in list(layer.pendingFields().toList())
-               if field.type() in (QtCore.QVariant.Double, QtCore.QVariant.Int)]
+               if field.type() in (QtCore.QVariant.Double, QtCore.QVariant.Int, QtCore.QVariant.UInt, QtCore.QVariant.LongLong, QtCore.QVariant.ULongLong)]
             # print fieldList
             self.selectedAttributes.addItems(self.selectedAttributesList)
 

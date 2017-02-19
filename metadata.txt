@@ -16,7 +16,7 @@ description=Proportional symbols are used for showing a quantity, for example th
 description[fr]=L'analyse en symboles proportionnels est utilisée pour représenter des effectifs, par exemple la population de communes de pays. Cette extension génère des fonds de ronds ou de secteurs (rose diagram). Il est également possible de générer une légende sans analyse préalable. Nécessite  Memory layer Saver pour sauvegarder les couches d'analyse avec le projet.
 about=The area of each circle or sector of the rose diagrams is proportional to a value in the attribute table of a points or polygons layer. The scale can either be fixed by the user or automatically calculated. In case of an automatic scale, the total of the areas of the circles equals 1/7 of the area of a reference polygons layer chosen by the user. The automatic legend of the circles contains three circles (corresponding to max value, max value / 3 and max value / 9), but it is also possible to use custom values.
 about[fr]=La surface de chaque cercle calculée pour être proportionnelle à une variable de la table d'attributs d'un fond de points ou de polygones. L'échelle peut être fixée soit par l'utilisateur, par exemple pour obtenir des cartes comparables, soit calculée automatiquement. Dans le cas de l'échelle automatique, la somme des aires des cercles est égale à 1/7 de la surface d'un fond de polygones de référence choisi par l'utilisateur. La légende des cercles représente soit les valeurs max, max/3 et max/9 de manière automatique, soit des valeurs définies par l'utilisateur.
-version=1.2.6
+version=1.2.7
 author=Lionel Cacheux
 email=lionel.cacheux@gmx.fr
 
@@ -26,12 +26,15 @@ email=lionel.cacheux@gmx.fr
 
 # Uncomment the following line and add your changelog entries:
 changelog=
+	1.2.7 - Attributes with Long integer are now allowed as avalaible attributes for analysisadded
     1.2.6 - Fix crash if raster is present
     1.2.5 - Bug fix for rose diagram
     1.2.4 - Ftools dependency removed + smaller UI
 	1.2 - add the possibility to generate a legend without a previous analysis
 	- add simplified rose diagram
 changelog[FR]=
+	1.2.7 - ajout des entiers longs dans la liste des types de variables autorisés pour les analyses
+	1.2.6 - correction platange avec raster
     1.2.5 - correction de plantage lors de la présence d'un raster
     1.2.5 - correction de bug pour les représentations en secteurs proportionnels
     1.2.4 - dépendance à Ftools supprimée + interface utilisateur plus compacte
