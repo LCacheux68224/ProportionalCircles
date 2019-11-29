@@ -1,3 +1,7 @@
+ **Remplacé par *Thematic* pour Qgis 3.4 et +**  
+https://github.com/LCacheux68224/Thematic  
+----------
+ 
  Analyse en ronds/secteurs proportionnels<br>avec échelle et légende automatique ![](https://raw.githubusercontent.com/LCacheux68224/ImagesForDoc/master/ProportionalCircles/iconRonds.png)
 ===================
 (Version 1.2.5)
